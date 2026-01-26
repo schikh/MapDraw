@@ -1,0 +1,255 @@
+/**
+ * Global Styles
+ * Dark theme styles for the MapDraw application.
+ * Includes Bootstrap customizations and OpenLayers overrides.
+ */
+
+/* ============================================================
+   IMPORTS
+   ============================================================ */
+
+/* Bootstrap CSS */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+/* OpenLayers CSS */
+@import 'ol/ol.css';
+
+/* ============================================================
+   CSS VARIABLES - Custom Dark Theme
+   ============================================================ */
+
+:root {
+  --app-bg-dark: #1a1a2e;
+  --app-bg-darker: #16213e;
+  --app-text-primary: #eaeaea;
+  --app-text-secondary: #a0a0a0;
+  --app-accent-primary: #0d6efd;
+  --app-accent-success: #198754;
+  --app-accent-warning: #ffc107;
+  --app-accent-danger: #dc3545;
+  --app-border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================================
+   GLOBAL RESET
+   ============================================================ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 
+               'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  background-color: var(--app-bg-dark);
+  color: var(--app-text-primary);
+}
+
+/* ============================================================
+   SCROLLBAR STYLING (Dark Theme)
+   ============================================================ */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--app-bg-darker);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ============================================================
+   BOOTSTRAP DARK THEME OVERRIDES
+   ============================================================ */
+
+.bg-dark {
+  background-color: var(--app-bg-dark) !important;
+}
+
+.border-secondary {
+  border-color: var(--app-border-color) !important;
+}
+
+.btn {
+  transition: all 0.2s ease;
+}
+
+.btn:focus {
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.btn-outline-light:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--app-text-primary);
+  font-weight: 600;
+}
+
+a {
+  color: var(--app-accent-primary);
+  text-decoration: none;
+}
+
+a:hover {
+  color: #6ea8fe;
+}
+
+/* ============================================================
+   FORM ELEMENTS (Dark Theme)
+   ============================================================ */
+
+input, select, textarea {
+  background-color: var(--app-bg-darker);
+  border: 1px solid var(--app-border-color);
+  color: var(--app-text-primary);
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--app-accent-primary);
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.2);
+}
+
+/* ============================================================
+   UTILITY CLASSES
+   ============================================================ */
+
+.text-muted {
+  color: var(--app-text-secondary) !important;
+}
+
+.shadow-dark {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Animation for loading states */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.loading-pulse {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* ============================================================
+   MODAL STYLES (Dark Theme)
+   ============================================================ */
+
+.modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content {
+  background-color: var(--app-bg-dark);
+  border: 1px solid var(--app-border-color);
+}
+
+/* ============================================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================================ */
+
+/* Mobile-first responsive breakpoints */
+@media (max-width: 576px) {
+  html {
+    font-size: 13px;
+  }
+  
+  .btn {
+    padding: 0.4rem 0.8rem;
+  }
+}
+
+@media (min-width: 577px) and (max-width: 768px) {
+  html {
+    font-size: 13.5px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 992px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 993px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+/* ============================================================
+   ACCESSIBILITY
+   ============================================================ */
+
+/* Focus visible for keyboard navigation */
+:focus-visible {
+  outline: 2px solid var(--app-accent-primary);
+  outline-offset: 2px;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================================
+   SIDEBAR STYLES
+   ============================================================ */
+
+.sidebar {
+  background: var(--app-bg-dark);
+  border-right: 1px solid var(--app-border-color);
+}
+
+/* ============================================================
+   FOOTER STYLES
+   ============================================================ */
+
+.footer {
+  background: var(--app-bg-dark);
+  border-top: 1px solid var(--app-border-color);
+}
+
+/* ============================================================
+   PRINT STYLES
+   ============================================================ */
+
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+  
+  .sidebar, .footer, .header {
+    display: none;
+  }
+}
