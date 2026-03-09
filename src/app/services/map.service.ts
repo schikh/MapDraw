@@ -22,7 +22,7 @@ import ScaleLine from 'ol/control/ScaleLine';
 import { DragPan } from 'ol/interaction';
 import { MapBrowserEvent } from 'ol';
 import proj4 from 'proj4';
-import { Canton, Pole, Project } from '../model/model';
+import { Canton, Pole, Line, Project, Position } from '../model';
 
 // ============================================================
 // LAMBERT 72 PROJECTION (EPSG:31370)
@@ -147,7 +147,10 @@ export class MapService {
     // Add scale line control (bottom left)
     const scaleLine = new ScaleLine({
       units: 'metric',
-      className: 'ol-scale-line custom-scale'
+      bar: true,
+      steps: 5,
+      text: true,
+      minWidth: 140,
     });
     this.map.addControl(scaleLine);
 
@@ -172,8 +175,10 @@ export class MapService {
    * Sets up all map event listeners for drawing and interaction.
    */
   private setupEventListeners(): void {
+    
     // Track mouse position for coordinates display and temp line
     this.map.on('pointermove', (event) => {
+
       // Convert map coordinates to WGS84 (lon/lat)
       const lonLat = toLonLat(event.coordinate);
       
@@ -181,10 +186,8 @@ export class MapService {
       const lambert72 = proj4('EPSG:4326', 'EPSG:31370', lonLat);
       
       // Display Lambert 72 coordinates
-      this.cursorCoordsSubject.next(
-        `Lambert 72: X=${lambert72[0].toFixed(2)} m, Y=${lambert72[1].toFixed(2)} m`
-      );
-      
+      this.cursorCoordsSubject.next(`Lambert 72: X=${lambert72[0].toFixed(2)} m, Y=${lambert72[1].toFixed(2)} m`);
+ 
       // Update temporary line during canton drawing
       if (this.currentMode === 'canton' && this.cantonPoleIds.length > 0) {
         this.lastMousePosition = event.coordinate as [number, number];
@@ -197,16 +200,19 @@ export class MapService {
       }
     });
 
+
     // Handle map clicks based on current mode
     this.map.on('click', (event) => {
       this.handleMapClick(event.coordinate as [number, number]);
     });
+
 
     // Handle double-click to finish drawing
     this.map.on('dblclick', (event) => {
       event.preventDefault();
       this.handleDoubleClick(event.coordinate as [number, number]);
     });
+
 
     // Handle drag for rotation - use pointerdrag event
     // @ts-ignore - pointerdrag is a valid OpenLayers event
@@ -388,12 +394,7 @@ export class MapService {
 
     // Create new pole with rotation angle
     const lonLat = toLonLat(coordinate) as [number, number];
-    const pole: Pole = {
-      id: this.generateId(),
-      coordinates: lonLat,
-      rotation: 0,
-      createdAt: new Date().toISOString()
-    };
+    const pole: Pole = new Pole(this.generateId(), 500, 12, 45, 10, new Position(lonLat[0], lonLat[1], 0));
 
     this.poles.push(pole);
     this.renderPole(pole);
@@ -479,11 +480,12 @@ export class MapService {
     }
 
     // Create and save the canton
-    const canton: Canton = {
-      id: this.generateId(),
-      poleIds: [...this.cantonPoleIds],
-      createdAt: new Date().toISOString()
-    };
+    const canton: Canton = new Canton();
+    canton.id = this.generateId();
+    canton.poleIds = [...this.cantonPoleIds];
+    canton.createdAt = new Date().toISOString();
+    canton.poles = this.cantonPoleIds.map(id => this.poles.find(p => p.id === id)!).filter(p => p !== undefined) as Pole[];
+    canton.sections = []; 
 
     this.cantons.push(canton);
     this.renderCanton(canton);
