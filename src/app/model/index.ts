@@ -1,7 +1,7 @@
-import { Canton } from "./Canton.js";
-import { Line } from "./Line.js";
-import { Pole } from "./Pole.js";
-import { Position } from "./Position.js";
+import { Canton } from "./Canton";
+import { Line } from "./Line";
+import { Pole } from "./Pole";
+import { Position } from "./Position";
 
 export { Canton } from './Canton';
 export { Line } from './Line';

@@ -17,8 +17,8 @@ describe('LineSection.calcConstraintAtConditions', () => {
       elasticityModulus: 6000,
       normalTraction: 10,
     });
-    const pole1 = new Pole(500, 12, 10, new Position(0, 0, 0));
-    const pole2 = new Pole(500, 12, 10, new Position(164, 0, 0));
+    const pole1 = new Pole("1", 500, 12, 45, 10, new Position(0, 0, 0));
+    const pole2 = new Pole("2", 500, 12, 135, 10, new Position(164, 0, 0));
     const canton = new Canton();
     canton.addPole(pole1);
     canton.addPole(pole2);
@@ -38,7 +38,5 @@ describe('LineSection.calcConstraintAtConditions', () => {
     // For now, just check it's a finite number and within a reasonable range
     expect(constraint).toBeGreaterThan(0);
     expect(constraint).toBeLessThan(20);
-
-    expect(1).toBeLessThan(2);
   });
 });

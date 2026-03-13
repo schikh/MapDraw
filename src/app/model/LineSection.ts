@@ -1,7 +1,7 @@
-import { Calculator } from "./Calculator.js";
-import { Line } from "./Line.js";
-import { Section } from "./Section.js";
-import { settings } from "../config/Settings.js";
+import { Calculator } from "./Calculator";
+import { Line } from "./Line";
+import { Section } from "./Section";
+import { settings } from "../config/Settings";
 
 export class LineSection {
     /** The cable/line running through this section */

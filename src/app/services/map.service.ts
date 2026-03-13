@@ -22,7 +22,7 @@ import ScaleLine from 'ol/control/ScaleLine';
 import { DragPan } from 'ol/interaction';
 import { MapBrowserEvent } from 'ol';
 import proj4 from 'proj4';
-import { Canton, Pole, Line, Project, Position } from '../model';
+import { Canton, Pole, Project, Position } from '../model';
 
 // ============================================================
 // LAMBERT 72 PROJECTION (EPSG:31370)
@@ -34,7 +34,7 @@ const LAMBERT_72_PROJ = '+proj=lcc +lat_1=51.16666723333333 +lat_2=49.8333339 +l
 proj4.defs('EPSG:31370', LAMBERT_72_PROJ);
 
 /** Drawing mode enumeration */
-export type DrawingMode = 'none' | 'pole' | 'canton' | 'rotate';
+export type DrawingMode = 'none' | 'pole' | 'canton' | 'rotate' | 'move' | 'remove-canton' | 'remove-pole';
 
 // ============================================================
 // CONSTANTS
@@ -68,9 +68,11 @@ export class MapService {
   private cantonPoleIds: string[] = []; // Poles being added to current canton
   private lastMousePosition: [number, number] | null = null;
   
-  // Rotation state
+  // Rotation / move / selection state
   private selectedPoleId: string | null = null;
+  private selectedCantonId: string | null = null;
   private isRotating = false;
+  private isMoving = false;
   private dragPanInteraction: DragPan | null = null;
   
   // Observables for component communication
@@ -113,7 +115,7 @@ export class MapService {
         // Canton polylines layer
         new VectorLayer({
           source: this.cantonSource,
-          style: this.getCantonStyle()
+          style: (feature) => this.getCantonStyle(feature as Feature)
         }),
         // Temporary drawing line layer
         new VectorLayer({
@@ -198,6 +200,33 @@ export class MapService {
       if (this.isRotating && this.selectedPoleId) {
         this.handleRotationDrag(event.coordinate as [number, number]);
       }
+
+      // Handle move drag
+      if (this.isMoving && this.selectedPoleId) {
+        this.handleMoveDrag(event.coordinate as [number, number]);
+      }
+
+      // Update cursor in move mode based on nearby pole
+      if (this.currentMode === 'move') {
+        if (this.isMoving) {
+          this.map.getTargetElement().style.cursor = 'grabbing';
+        } else {
+          const nearPole = this.findPoleAtCoordinate(event.coordinate as [number, number]);
+          this.map.getTargetElement().style.cursor = nearPole ? 'grab' : 'crosshair';
+        }
+      }
+
+      // Update cursor in remove-canton mode based on nearby canton
+      if (this.currentMode === 'remove-canton') {
+        const nearCanton = this.findCantonAtCoordinate(event.coordinate as [number, number]);
+        this.map.getTargetElement().style.cursor = nearCanton ? 'pointer' : 'crosshair';
+      }
+
+      // Update cursor in remove-pole mode based on nearby pole
+      if (this.currentMode === 'remove-pole') {
+        const nearPole = this.findPoleAtCoordinate(event.coordinate as [number, number]);
+        this.map.getTargetElement().style.cursor = nearPole ? 'pointer' : 'crosshair';
+      }
     });
 
 
@@ -238,6 +267,27 @@ export class MapService {
           }
         }
       }
+
+      // Handle pole moving
+      if (this.currentMode === 'move' && this.selectedPoleId) {
+        const poleFeature = this.poleSource.getFeatureById(`pole-${this.selectedPoleId}`) as Feature;
+        if (poleFeature) {
+          const poleCoord = (poleFeature.getGeometry() as Point).getCoordinates();
+          const distance = Math.sqrt(
+            Math.pow(event.coordinate[0] - poleCoord[0], 2) +
+            Math.pow(event.coordinate[1] - poleCoord[1], 2)
+          );
+          const tolerance = this.map.getView().getResolution()! * 20;
+          if (distance < tolerance || this.isMoving) {
+            this.isMoving = true;
+            if (this.dragPanInteraction) {
+              this.dragPanInteraction.setActive(false);
+            }
+            this.handleMoveDrag(event.coordinate as [number, number]);
+            event.preventDefault();
+          }
+        }
+      }
     });
 
     // Handle mouse up to finish rotation - use moveend as fallback
@@ -251,6 +301,15 @@ export class MapService {
         }
         this.saveState();
         this.showMessage('success', 'Pole rotation updated.');
+      }
+      if (this.isMoving) {
+        this.isMoving = false;
+        // Re-enable map panning
+        if (this.dragPanInteraction) {
+          this.dragPanInteraction.setActive(true);
+        }
+        this.saveState();
+        this.showMessage('success', 'Pole moved successfully.');
       }
     });
 
@@ -272,6 +331,162 @@ export class MapService {
       case 'rotate':
         this.handleRotateClick(coordinate);
         break;
+      case 'move':
+        this.handleMoveClick(coordinate);
+        break;
+      case 'remove-canton':
+        this.handleRemoveCantonClick(coordinate);
+        break;
+      case 'remove-pole':
+        this.handleRemovePoleClick(coordinate);
+        break;
+    }
+  }
+
+  /**
+   * Handles click in remove-pole mode.
+   * First click selects/highlights a pole; second click on the same pole removes it.
+   * Shows an error if the pole is linked to any canton.
+   * Clicking elsewhere deselects.
+   */
+  private handleRemovePoleClick(coordinate: [number, number]): void {
+    const pole = this.findPoleAtCoordinate(coordinate);
+
+    if (pole) {
+      if (this.selectedPoleId === pole.id) {
+        // Second click on the same pole – attempt removal
+        const linkedCanton = this.cantons.find(c => c.poleIds.includes(pole.id));
+        if (linkedCanton) {
+          this.showMessage('error', 'Cannot remove pole: it is linked to one or more cantons. Remove those cantons first.');
+          return;
+        }
+        this.removePole(pole.id);
+      } else {
+        // First click – select / highlight
+        this.selectedPoleId = pole.id;
+        this.poleSource.changed();
+        this.showMessage('info', 'Pole selected. Click it again to delete it.');
+      }
+    } else {
+      // Click on empty space – deselect
+      if (this.selectedPoleId) {
+        this.selectedPoleId = null;
+        this.poleSource.changed();
+        this.showMessage('info', 'Click on a pole to select it for removal.');
+      }
+    }
+  }
+
+  /**
+   * Removes the pole with the given id from data and map.
+   */
+  private removePole(poleId: string): void {
+    this.poles = this.poles.filter(p => p.id !== poleId);
+    const feature = this.poleSource.getFeatureById(`pole-${poleId}`);
+    if (feature) this.poleSource.removeFeature(feature as Feature);
+    this.selectedPoleId = null;
+    this.saveState();
+    this.updateStats();
+    this.showMessage('success', 'Pole removed.');
+  }
+
+  /**
+   * Handles click in remove-canton mode.
+   * First click selects/highlights a canton; second click on the same canton removes it.
+   * Clicking elsewhere deselects.
+   */
+  private handleRemoveCantonClick(coordinate: [number, number]): void {
+    const canton = this.findCantonAtCoordinate(coordinate);
+
+    if (canton) {
+      if (this.selectedCantonId === canton.id) {
+        // Second click on the same canton – remove it
+        this.removeCanton(canton.id);
+      } else {
+        // First click – select / highlight
+        this.selectedCantonId = canton.id;
+        this.cantonSource.changed();
+        this.showMessage('info', 'Canton selected. Click it again to delete it.');
+      }
+    } else {
+      // Click on empty space – deselect
+      if (this.selectedCantonId) {
+        this.selectedCantonId = null;
+        this.cantonSource.changed();
+        this.showMessage('info', 'Click on a canton to select it for removal.');
+      }
+    }
+  }
+
+  /**
+   * Removes the canton with the given id from data and map.
+   */
+  private removeCanton(cantonId: string): void {
+    this.cantons = this.cantons.filter(c => c.id !== cantonId);
+    const feature = this.cantonSource.getFeatureById(`canton-${cantonId}`);
+    if (feature) this.cantonSource.removeFeature(feature);
+    this.selectedCantonId = null;
+    this.saveState();
+    this.updateStats();
+    this.showMessage('success', 'Canton removed.');
+  }
+
+  /**
+   * Finds a canton whose polyline passes within click tolerance of the given coordinate.
+   */
+  private findCantonAtCoordinate(coordinate: [number, number]): Canton | null {
+    const tolerance = this.map.getView().getResolution()! * 10;
+
+    for (const canton of this.cantons) {
+      const feature = this.cantonSource.getFeatureById(`canton-${canton.id}`) as Feature;
+      if (!feature) continue;
+      const coords = (feature.getGeometry() as LineString).getCoordinates();
+      for (let i = 0; i < coords.length - 1; i++) {
+        const dist = this.pointToSegmentDistance(
+          coordinate,
+          coords[i] as [number, number],
+          coords[i + 1] as [number, number]
+        );
+        if (dist < tolerance) return canton;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Returns the perpendicular distance from point p to segment [a, b].
+   */
+  private pointToSegmentDistance(p: [number, number], a: [number, number], b: [number, number]): number {
+    const dx = b[0] - a[0];
+    const dy = b[1] - a[1];
+    const lenSq = dx * dx + dy * dy;
+    let t = 0;
+    if (lenSq > 0) {
+      t = ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / lenSq;
+      t = Math.max(0, Math.min(1, t));
+    }
+    const ex = p[0] - (a[0] + t * dx);
+    const ey = p[1] - (a[1] + t * dy);
+    return Math.sqrt(ex * ex + ey * ey);
+  }
+
+  /**
+   * Handles click in move mode - selects a pole to move.
+   */
+  private handleMoveClick(coordinate: [number, number]): void {
+    if (this.isMoving) return; // Ignore clicks mid-drag
+    const pole = this.findPoleAtCoordinate(coordinate);
+
+    if (pole) {
+      this.selectedPoleId = pole.id;
+      this.poleSource.changed();
+      this.showMessage('info', 'Pole selected. Drag it to move to a new position.');
+    } else {
+      if (this.selectedPoleId) {
+        this.selectedPoleId = null;
+        this.poleSource.changed();
+        this.showMessage('info', 'Click on a pole to select it for moving.');
+      }
     }
   }
 
@@ -296,6 +511,36 @@ export class MapService {
         this.showMessage('info', 'Click on a pole to select it for rotation.');
       }
     }
+  }
+
+  /**
+   * Handles dragging to move the selected pole to a new position.
+   */
+  private handleMoveDrag(coordinate: [number, number]): void {
+    const pole = this.poles.find(p => p.id === this.selectedPoleId);
+    if (!pole) return;
+
+    // Update pole coordinates
+    const lonLat = toLonLat(coordinate) as [number, number];
+    pole.coordinates = lonLat;
+    pole.position = new Position(lonLat[0], lonLat[1], pole.position.z || 0);
+
+    // Update the pole feature geometry in-place for smooth dragging
+    const feature = this.poleSource.getFeatureById(`pole-${pole.id}`) as Feature;
+    if (feature) {
+      (feature.getGeometry() as Point).setCoordinates(coordinate);
+    }
+
+    // Refresh canton lines that connect to this pole
+    this.refreshCantonFeatures();
+  }
+
+  /**
+   * Re-renders all canton features (used after a pole is moved).
+   */
+  private refreshCantonFeatures(): void {
+    this.cantonSource.clear();
+    this.cantons.forEach(canton => this.renderCanton(canton));
   }
 
   /**
@@ -578,6 +823,28 @@ export class MapService {
         }
         this.poleSource.changed();
       }
+
+      // Clean up move mode
+      if (this.currentMode === 'move') {
+        this.selectedPoleId = null;
+        this.isMoving = false;
+        if (this.dragPanInteraction) {
+          this.dragPanInteraction.setActive(true);
+        }
+        this.poleSource.changed();
+      }
+
+      // Clean up remove-canton mode
+      if (this.currentMode === 'remove-canton') {
+        this.selectedCantonId = null;
+        this.cantonSource.changed();
+      }
+
+      // Clean up remove-pole mode
+      if (this.currentMode === 'remove-pole') {
+        this.selectedPoleId = null;
+        this.poleSource.changed();
+      }
     }
 
     this.currentMode = mode;
@@ -598,6 +865,15 @@ export class MapService {
       case 'rotate':
         this.showMessage('info', 'Click on a pole to select it, then drag the handle to rotate.');
         break;
+      case 'move':
+        this.showMessage('info', 'Click on a pole to select it, then drag to move it.');
+        break;
+      case 'remove-canton':
+        this.showMessage('info', 'Click on a canton to select it, then click again to remove it.');
+        break;
+      case 'remove-pole':
+        this.showMessage('info', 'Click on a pole to select it, then click again to remove it.');
+        break;
       case 'none':
         this.showMessage('info', 'Drawing stopped.');
         break;
@@ -614,10 +890,13 @@ export class MapService {
     this.cantonPoleIds = [];
     this.tempLineSource.clear();
     
-    // Clean up rotation mode
+    // Clean up rotation / move / remove-canton mode
     this.selectedPoleId = null;
+    this.selectedCantonId = null;
     if (this.leverSource) this.leverSource.clear();
+    if (this.cantonSource) this.cantonSource.changed();
     this.isRotating = false;
+    this.isMoving = false;
     if (this.dragPanInteraction) {
       this.dragPanInteraction.setActive(true);
     }
@@ -712,12 +991,16 @@ export class MapService {
 
   /**
    * Returns the style for canton polylines.
+   * Highlights the selected canton in remove-canton mode.
    */
-  private getCantonStyle(): Style {
+  private getCantonStyle(feature?: Feature): Style {
+    const cantonId = feature?.get('cantonId');
+    const isSelected = !!cantonId && cantonId === this.selectedCantonId;
     return new Style({
       stroke: new Stroke({
-        color: '#3498db',
-        width: 3
+        color: isSelected ? '#e74c3c' : '#3498db',
+        width: isSelected ? 5 : 3,
+        lineDash: isSelected ? [8, 4] : undefined
       })
     });
   }

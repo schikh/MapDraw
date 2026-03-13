@@ -71,6 +71,39 @@ import { MapService, DrawingMode } from '../../services/map.service';
             <span>Rotate Pole</span>
           </button>
 
+          <!-- Move Pole Button -->
+          <button 
+            class="btn w-100 mb-2 d-flex align-items-center"
+            [class.btn-info]="currentMode === 'move'"
+            [class.btn-outline-light]="currentMode !== 'move'"
+            (click)="setMode('move')"
+            title="Click a pole to select it, then drag to move it">
+            <i class="bi bi-arrows-move me-2"></i>
+            <span>Move Pole</span>
+          </button>
+
+          <!-- Remove Canton Button -->
+          <button 
+            class="btn w-100 mb-2 d-flex align-items-center"
+            [class.btn-danger]="currentMode === 'remove-canton'"
+            [class.btn-outline-light]="currentMode !== 'remove-canton'"
+            (click)="setMode('remove-canton')"
+            title="Click a canton to select it, then click again to delete it">
+            <i class="bi bi-scissors me-2"></i>
+            <span>Remove Canton</span>
+          </button>
+
+          <!-- Remove Pole Button -->
+          <button 
+            class="btn w-100 mb-2 d-flex align-items-center"
+            [class.btn-danger]="currentMode === 'remove-pole'"
+            [class.btn-outline-light]="currentMode !== 'remove-pole'"
+            (click)="setMode('remove-pole')"
+            title="Click a pole to select it, then click again to delete it">
+            <i class="bi bi-geo-alt me-2"></i>
+            <span>Remove Pole</span>
+          </button>
+
           <!-- Stop Drawing Button -->
           <button 
             class="btn btn-outline-warning w-100 mb-3 d-flex align-items-center"
@@ -120,12 +153,17 @@ import { MapService, DrawingMode } from '../../services/map.service';
             [class.bg-primary]="currentMode === 'pole'"
             [class.bg-success]="currentMode === 'canton'"
             [class.bg-warning]="currentMode === 'rotate'"
-            [class.text-dark]="currentMode === 'rotate'">
+            [class.bg-info]="currentMode === 'move'"
+            [class.bg-danger]="currentMode === 'remove-canton' || currentMode === 'remove-pole'"
+            [class.text-dark]="currentMode === 'rotate' || currentMode === 'move'">
             <i class="bi me-1"
                [class.bi-cursor]="currentMode === 'none'"
                [class.bi-geo-alt-fill]="currentMode === 'pole'"
                [class.bi-bezier2]="currentMode === 'canton'"
-               [class.bi-arrow-repeat]="currentMode === 'rotate'">
+               [class.bi-arrow-repeat]="currentMode === 'rotate'"
+               [class.bi-arrows-move]="currentMode === 'move'"
+               [class.bi-scissors]="currentMode === 'remove-canton'"
+               [class.bi-geo-alt]="currentMode === 'remove-pole'">
             </i>
             {{ getModeLabel() }}
           </span>
@@ -157,6 +195,30 @@ import { MapService, DrawingMode } from '../../services/map.service';
           (click)="setMode('rotate')"
           title="Rotate Pole">
           <i class="bi bi-arrow-repeat"></i>
+        </button>
+        <button 
+          class="btn btn-sm mb-2"
+          [class.btn-info]="currentMode === 'move'"
+          [class.btn-outline-light]="currentMode !== 'move'"
+          (click)="setMode('move')"
+          title="Move Pole">
+          <i class="bi bi-arrows-move"></i>
+        </button>
+        <button 
+          class="btn btn-sm mb-2"
+          [class.btn-danger]="currentMode === 'remove-canton'"
+          [class.btn-outline-light]="currentMode !== 'remove-canton'"
+          (click)="setMode('remove-canton')"
+          title="Remove Canton">
+          <i class="bi bi-scissors"></i>
+        </button>
+        <button 
+          class="btn btn-sm mb-2"
+          [class.btn-danger]="currentMode === 'remove-pole'"
+          [class.btn-outline-light]="currentMode !== 'remove-pole'"
+          (click)="setMode('remove-pole')"
+          title="Remove Pole">
+          <i class="bi bi-geo-alt"></i>
         </button>
         <button 
           class="btn btn-outline-warning btn-sm mb-2"
@@ -362,6 +424,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
       case 'pole': return 'Adding Poles';
       case 'canton': return 'Drawing Canton';
       case 'rotate': return 'Rotating Pole';
+      case 'move': return 'Moving Pole';
+      case 'remove-canton': return 'Removing Canton';
+      case 'remove-pole': return 'Removing Pole';
       default: return 'Select Tool';
     }
   }

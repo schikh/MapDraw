@@ -1,4 +1,4 @@
-import { Pole } from "./Pole.js";
+import { Pole } from "./Pole";
 
 export class Section {
     /** Pole at the start of the section */

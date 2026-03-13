@@ -1,7 +1,7 @@
-import { Line } from "./Line.js";
-import { LineSection } from "./LineSection.js";
-import { Pole } from "./Pole.js";
-import { Section } from "./Section.js";
+import { Line } from "./Line";
+import { LineSection } from "./LineSection";
+import { Pole } from "./Pole";
+import { Section } from "./Section";
 
 /**
  * A Canton is a sequence of poles connected in a straight line.

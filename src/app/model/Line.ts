@@ -1,4 +1,4 @@
-import { LineSection } from "./LineSection.js";
+import { LineSection } from "./LineSection";
 
 export class Line {
     /** Cable type identifier */
