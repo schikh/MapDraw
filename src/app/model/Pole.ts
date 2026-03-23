@@ -18,7 +18,7 @@ export class Pole {
     /** 3-D position of the pole */
     public position: Position;
 
-    public coordinates: [number, number];
+    //public coordinates: [number, number];
 
     public createdAt: string;
 
@@ -29,7 +29,7 @@ export class Pole {
         this.rotation = rotation;
         this.aboveGroundHeight = aboveGroundHeight;
         this.position = position;
-        this.coordinates = [this.position.x, this.position.y];
+        //this.coordinates = [this.position.x, this.position.y];
         this.createdAt = new Date().toISOString();
     }
 

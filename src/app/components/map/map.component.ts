@@ -7,11 +7,14 @@ import { Component, OnInit, OnDestroy, ElementRef, ViewChild, AfterViewInit } fr
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { MapService } from '../../services/map.service';
+import { PoleEditModalComponent } from '../pole-edit-modal/pole-edit-modal.component';
+import { CantonEditModalComponent } from '../canton-edit-modal/canton-edit-modal.component';
+import { Pole, Canton } from '../../model';
 
 @Component({
   selector: 'app-map',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, PoleEditModalComponent, CantonEditModalComponent],
   template: `
     <!-- Map Container -->
     <div class="map-wrapper">
@@ -47,6 +50,22 @@ import { MapService } from '../../services/map.service';
         </div>
         <p class="mt-2 text-light">Loading map...</p>
       </div>
+
+      <!-- Pole Edit Modal -->
+      <app-pole-edit-modal
+        *ngIf="editingPole"
+        [pole]="editingPole"
+        (saved)="onPoleSaved($event)"
+        (cancelled)="closePoleModal()">
+      </app-pole-edit-modal>
+
+      <!-- Canton Edit Modal -->
+      <app-canton-edit-modal
+        *ngIf="editingCanton"
+        [canton]="editingCanton"
+        (cancelled)="closeCantonModal()">
+      </app-canton-edit-modal>
+
     </div>
   `,
   styles: [`
@@ -228,25 +247,34 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   message: { type: 'success' | 'error' | 'info'; text: string } | null = null;
   isLoading = true;
 
+  editingPole: Pole | null = null;
+  editingCanton: Canton | null = null;
+
   private coordsSubscription?: Subscription;
   private messageSubscription?: Subscription;
+  private editPoleSubscription?: Subscription;
+  private editCantonSubscription?: Subscription;
 
   constructor(private mapService: MapService) {}
 
   ngOnInit(): void {
-    // Subscribe to coordinate updates
     this.coordsSubscription = this.mapService.cursorCoords$.subscribe(coords => {
       this.cursorCoordinates = coords;
     });
-
-    // Subscribe to message updates
     this.messageSubscription = this.mapService.message$.subscribe(msg => {
       this.message = msg;
+    });
+    this.editPoleSubscription = this.mapService.editPole$.subscribe(pole => {
+      this.editingCanton = null;
+      this.editingPole = pole;
+    });
+    this.editCantonSubscription = this.mapService.editCanton$.subscribe(canton => {
+      this.editingPole = null;
+      this.editingCanton = canton;
     });
   }
 
   ngAfterViewInit(): void {
-    // Initialize map after view is ready
     setTimeout(() => {
       this.mapService.initializeMap(this.mapContainer.nativeElement);
       this.isLoading = false;
@@ -256,11 +284,23 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.coordsSubscription?.unsubscribe();
     this.messageSubscription?.unsubscribe();
+    this.editPoleSubscription?.unsubscribe();
+    this.editCantonSubscription?.unsubscribe();
   }
 
-  /**
-   * Dismisses the current message toast.
-   */
+  onPoleSaved(updated: Pole): void {
+    this.mapService.updatePole(updated);
+    this.editingPole = null;
+  }
+
+  closePoleModal(): void {
+    this.editingPole = null;
+  }
+
+  closeCantonModal(): void {
+    this.editingCanton = null;
+  }
+
   dismissMessage(): void {
     this.message = null;
   }
