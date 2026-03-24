@@ -8,6 +8,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Canton } from '../../model/Canton';
 import { Line } from '../../model/Line';
+import { appSettings, Cable } from '../../config/AppSettings';
+import { CantonService } from '../../services/canton.service';
 
 @Component({
   selector: 'app-canton-edit',
@@ -61,9 +63,7 @@ import { Line } from '../../model/Line';
                   class="line-type-select"
                   [ngModel]="line.type"
                   (ngModelChange)="onTypeChange(line, $event)">
-                  <option value="Type-A">Type-A</option>
-                  <option value="Type-B">Type-B</option>
-                  <option value="Type-C">Type-C</option>
+                  <option *ngFor="let cable of cables" [value]="cable.type">{{ cable.type }}</option>
                 </select>
 
                 <!-- LineSection constraints -->
@@ -490,45 +490,19 @@ export class CantonEditComponent implements OnChanges {
   @Input() canton!: Canton;
   @Output() cancelled = new EventEmitter<void>();
 
+   constructor(
+     private cantonService: CantonService
+   ) {}
+
   totalLength = 0;
+
+  get cables(): Cable[] {
+    return appSettings.cables;
+  }
 
   get lines(): Line[] {
     return this.canton?.lines ?? [];
   }
-
-  /** Default constructor parameters keyed by cable type */
-  private readonly lineDefaults: Record<string, ConstructorParameters<typeof Line>[0]> = {
-    'Type-A': {
-      type: 'Type-A',
-      sectionArea: 34.4,
-      diameter: 7.5,
-      weight: 2.76,
-      carrierWeight: 0,
-      expansionCoefficient: 23e-6,
-      elasticityModulus: 6000,
-      normalTraction: 10,
-    },
-    'Type-B': {
-      type: 'Type-B',
-      sectionArea: 54.6,
-      diameter: 9.45,
-      weight: 4.39,
-      carrierWeight: 0,
-      expansionCoefficient: 23e-6,
-      elasticityModulus: 6000,
-      normalTraction: 12,
-    },
-    'Type-C': {
-      type: 'Type-C',
-      sectionArea: 75.5,
-      diameter: 11.25,
-      weight: 6.07,
-      carrierWeight: 0,
-      expansionCoefficient: 23e-6,
-      elasticityModulus: 6000,
-      normalTraction: 14,
-    },
-  };
 
   ngOnChanges(): void {
     if (this.canton) {
@@ -538,8 +512,9 @@ export class CantonEditComponent implements OnChanges {
 
   /** Add a new line (Type-A by default) and register it with the canton */
   addLine(): void {
-    const line = new Line(this.lineDefaults['Type-A']);
+    const line = new Line('ALU 34.4');
     this.canton.addLine(line);
+    this.cantonService.updateCanton(this.canton);
   }
 
   /** Remove a line and its associated LineSections */
@@ -547,15 +522,18 @@ export class CantonEditComponent implements OnChanges {
     const line = this.canton.lines[index];
     line.lineSections = [];
     this.canton.lines.splice(index, 1);
+    this.cantonService.updateCanton(this.canton);
   }
 
   /** When the type dropdown changes, update the line's type */
   onTypeChange(line: Line, newType: string): void {
     line.type = newType;
+    this.cantonService.updateCanton(this.canton);
   }
 
   cancel(): void {
     this.cancelled.emit();
+    this.cantonService.updateCanton(this.canton);
   }
 
   onBackdropClick(event: MouseEvent): void {

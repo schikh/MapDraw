@@ -15,4 +15,10 @@ export class Section {
         this.endPole = endPole;
         this.length = startPole.distanceTo(endPole);
     }
+
+    public static fromJSON(json: any): Section {
+        const startPole = Pole.fromJSON(json.startPole);
+        const endPole = Pole.fromJSON(json.endPole);
+        return new Section(startPole, endPole);
+    }
 }

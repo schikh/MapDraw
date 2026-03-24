@@ -5,10 +5,12 @@
 
 import { Injectable } from '@angular/core';
 import { Canton } from '../model/Canton';
+import { Line } from '../model/Line';
 import { Pole } from '../model/Pole';
 import { Position } from '../model/Position';
 import { Project } from '../model/Project';
 import { MapStateService } from './map-state.service';
+import { jsonIgnoreReplacer } from 'json-ignore';
 
 const STORAGE_KEY = 'map-drawing-app-state';
 
@@ -28,7 +30,7 @@ export class MapPersistenceService {
         poles: this.state.project.poles,
         cantons: this.state.project.cantons
       };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data, jsonIgnoreReplacer));
     } catch (error) {
       console.error('Failed to save state:', error);
       this.state.showMessage('error', 'Failed to save data.');
@@ -60,7 +62,6 @@ export class MapPersistenceService {
         );
       });
 
-      // Reconstruct Canton instances; addPole() automatically builds poleIds and Sections
       var cantons = rawCantons.map((sc: any) => {
         const canton = new Canton();
         const resolvedPoles: Pole[] = (sc.poleIds ?? [])
@@ -71,6 +72,25 @@ export class MapPersistenceService {
         }
         return canton;
       });
+
+      // Rehydrate lines and lineSections
+      for (let i = 0; i < rawCantons.length; i++) {
+        const rawCanton = rawCantons[i];
+        const canton = cantons[i];
+        if (rawCanton.lines) {
+          for (const rawLine of rawCanton.lines) {
+            const line = new Line(rawLine.type);
+            line.maxConstraint = rawLine.maxConstraint ?? 0;
+            canton.addLine(line);
+            // Set constraints from saved lineSections
+            if (rawLine.lineSections) {
+              for (let k = 0; k < Math.min(line.lineSections.length, rawLine.lineSections.length); k++) {
+                line.lineSections[k].constraint = rawLine.lineSections[k].constraint ?? 0;
+              }
+            }
+          }
+        }
+      }
 
       this.state.project = new Project(cantons, poles);
     } catch (error) {

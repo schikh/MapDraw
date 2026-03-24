@@ -2,12 +2,15 @@ import { Calculator } from "./Calculator";
 import { Line } from "./Line";
 import { Section } from "./Section";
 import { settings } from "../config/Settings";
+import { jsonIgnore } from "json-ignore";
 
 export class LineSection {
     /** The cable/line running through this section */
+    @jsonIgnore()
     public line: Line;
 
     /** The section (span between two poles) */
+    @jsonIgnore()
     public section: Section;
 
     constructor(line: Line, section: Section) {
@@ -31,7 +34,7 @@ export class LineSection {
         overload: number;
         criticalTemperature: number;
     } {
-        const cable = this.line;
+        const cable = this.line.cable;
         const sectionLength = this.section.length;
         const diameterInMeters = cable.diameter / 1000;
 
@@ -103,9 +106,17 @@ export class LineSection {
             temp2,
             overload2,
             this.section.length,
-            this.line.elasticityModulus,
-            this.line.specificWeight,
-            this.line.expansionCoefficient,
+            this.line.cable.elasticityModulus,
+            this.line.cable.specificWeight,
+            this.line.cable.expansionCoefficient,
         );
+    }
+
+    public static fromJSON(json: any): LineSection {
+        const line = Line.fromJSON(json.line);
+        const section = Section.fromJSON(json.section);
+        const lineSection = new LineSection(line, section);
+        lineSection.constraint = json.constraint ?? 0;
+        return lineSection;
     }
 }

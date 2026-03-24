@@ -72,4 +72,15 @@ export class Canton {
     private generateId(): string {
         return 'canton-' + Math.random().toString(36).substr(2, 9);
     }
+
+    public static fromJSON(json: any): Canton {
+        const canton = new Canton();
+        canton.id = json.id;
+        canton.poleIds = json.poleIds ?? [];
+        canton.createdAt = json.createdAt;
+        canton.poles = (json.poles ?? []).map((p: any) => Pole.fromJSON(p));
+        canton.sections = (json.sections ?? []).map((s: any) => Section.fromJSON(s));
+        canton.lines = (json.lines ?? []).map((l: any) => Line.fromJSON(l));
+        return canton;
+    }
 }

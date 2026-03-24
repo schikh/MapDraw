@@ -39,4 +39,16 @@ export class Pole {
     public distanceTo(other: Pole): number {
         return this.position.distanceTo(other.position);
     }
+
+    public static fromJSON(json: any): Pole {
+        const position = Position.fromJSON(json.position);
+        return new Pole(
+            json.id,
+            json.strength,
+            json.height,
+            json.rotation,
+            json.aboveGroundHeight,
+            position
+        );
+    }
 }

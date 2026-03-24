@@ -25,4 +25,8 @@ export class Position {
             (other.z - this.z) ** 2,
         );
     }
+
+    public static fromJSON(json: any): Position {
+        return new Position(json.x, json.y, json.z ?? 0);
+    }
 }
