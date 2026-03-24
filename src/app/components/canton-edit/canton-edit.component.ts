@@ -7,6 +7,7 @@ import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Canton } from '../../model/Canton';
+import { Line } from '../../model/Line';
 
 @Component({
   selector: 'app-canton-edit',

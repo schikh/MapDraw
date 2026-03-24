@@ -9,7 +9,8 @@ import { Subscription } from 'rxjs';
 import { MapService } from '../../services/map.service';
 import { PoleEditComponent } from '../pole-edit/pole-edit.component';
 import { CantonEditComponent } from '../canton-edit/canton-edit.component';
-import { Pole, Canton } from '../../model';
+import { Canton } from '../../model/Canton';
+import { Pole } from '../../model/Pole';
 
 @Component({
   selector: 'app-map',

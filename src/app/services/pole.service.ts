@@ -10,6 +10,7 @@ import { fromLonLat, toLonLat } from 'ol/proj';
 import { Pole } from '../model/Pole';
 import { MapStateService } from './map-state.service';
 import { MapPersistenceService } from './map-persistence.service';
+import { Position } from '../model/Position';
 
 const MIN_POLE_DISTANCE_METERS = 0.5; // 50cm minimum distance between poles
 const DEFAULT_CENTER_LAT = 50.8503;   // Brussels latitude for distance correction
