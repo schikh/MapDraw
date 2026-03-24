@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import { fromLonLat, toLonLat } from 'ol/proj';
-import { Pole, Position } from '../model';
+import { Pole } from '../model/Pole';
 import { MapStateService } from './map-state.service';
 import { MapPersistenceService } from './map-persistence.service';
 

@@ -7,14 +7,14 @@ import { Component, OnInit, OnDestroy, ElementRef, ViewChild, AfterViewInit } fr
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { MapService } from '../../services/map.service';
-import { PoleEditModalComponent } from '../pole-edit-modal/pole-edit-modal.component';
-import { CantonEditModalComponent } from '../canton-edit-modal/canton-edit-modal.component';
+import { PoleEditComponent } from '../pole-edit/pole-edit.component';
+import { CantonEditComponent } from '../canton-edit/canton-edit.component';
 import { Pole, Canton } from '../../model';
 
 @Component({
   selector: 'app-map',
   standalone: true,
-  imports: [CommonModule, PoleEditModalComponent, CantonEditModalComponent],
+  imports: [CommonModule, PoleEditComponent, CantonEditComponent],
   template: `
     <!-- Map Container -->
     <div class="map-wrapper">
@@ -52,19 +52,19 @@ import { Pole, Canton } from '../../model';
       </div>
 
       <!-- Pole Edit Modal -->
-      <app-pole-edit-modal
+      <app-pole-edit
         *ngIf="editingPole"
         [pole]="editingPole"
         (saved)="onPoleSaved($event)"
         (cancelled)="closePoleModal()">
-      </app-pole-edit-modal>
+      </app-pole-edit>
 
       <!-- Canton Edit Modal -->
-      <app-canton-edit-modal
+      <app-canton-edit
         *ngIf="editingCanton"
         [canton]="editingCanton"
         (cancelled)="closeCantonModal()">
-      </app-canton-edit-modal>
+      </app-canton-edit>
 
     </div>
   `,

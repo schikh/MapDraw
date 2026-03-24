@@ -4,7 +4,10 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Canton, Pole, Position, Project } from '../model';
+import { Canton } from '../model/Canton';
+import { Pole } from '../model/Pole';
+import { Position } from '../model/Position';
+import { Project } from '../model/Project';
 import { MapStateService } from './map-state.service';
 
 const STORAGE_KEY = 'map-drawing-app-state';
@@ -45,7 +48,7 @@ export class MapPersistenceService {
       const rawCantons: any[] = data.cantons ?? [];
 
       // Reconstruct Pole instances; handles legacy data that stored `coordinates`
-      this.state.project.poles = rawPoles.map((sp: any) => {
+      var poles = rawPoles.map((sp: any) => {
         const pos = new Position(sp.position.x, sp.position.y);
         return new Pole(
           sp.id,
@@ -58,16 +61,18 @@ export class MapPersistenceService {
       });
 
       // Reconstruct Canton instances; addPole() automatically builds poleIds and Sections
-      this.state.project.cantons = rawCantons.map((sc: any) => {
+      var cantons = rawCantons.map((sc: any) => {
         const canton = new Canton();
         const resolvedPoles: Pole[] = (sc.poleIds ?? [])
-          .map((id: string) => this.state.project.poles.find(p => p.id === id)!)
+          .map((id: string) => poles.find(p => p.id === id)!)
           .filter((p: Pole) => p !== undefined);
         for (const pole of resolvedPoles) {
           canton.addPole(pole);
         }
         return canton;
       });
+
+      this.state.project = new Project(cantons, poles);
     } catch (error) {
       console.error('Failed to load state:', error);
       this.state.project = new Project([], []);

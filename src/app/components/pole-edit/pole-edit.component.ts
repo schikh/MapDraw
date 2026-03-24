@@ -9,7 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { Pole } from '../../model';
 
 @Component({
-  selector: 'app-pole-edit-modal',
+  selector: 'app-pole-edit',
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
@@ -347,7 +347,7 @@ import { Pole } from '../../model';
     }
   `]
 })
-export class PoleEditModalComponent implements OnChanges {
+export class PoleEditComponent implements OnChanges {
   @Input() pole!: Pole;
   @Output() saved = new EventEmitter<Pole>();
   @Output() cancelled = new EventEmitter<void>();

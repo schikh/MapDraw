@@ -15,6 +15,8 @@ export class LineSection {
         this.section = section;
     }
 
+    public constraint: number = 0; // Current tension constraint (kg/mm²)
+
     /**
      * Computes all overload parameters for this LineSection's line and section.
      *

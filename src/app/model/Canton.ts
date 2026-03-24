@@ -14,6 +14,7 @@ export class Canton {
     public id: string;
     public poles: Pole[] = [];
     public sections: Section[] = [];
+    public lines: Line[] = [];
     public poleIds: string[] = []; // Array of pole IDs forming the polyline
     public createdAt: string;
 
@@ -55,6 +56,8 @@ export class Canton {
                 "Cannot add a line: the canton has no sections (add at least two poles first).",
             );
         }
+
+        this.lines.push(line);
 
         for (const section of this.sections) {
             const ls = new LineSection(line, section);

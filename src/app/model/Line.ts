@@ -36,6 +36,8 @@ export class Line {
 
     public createdAt: string;
 
+    public maxConstraint: number = 0;
+
     constructor(params: {
         type: string;
         sectionArea: number;

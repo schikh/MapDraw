@@ -8,7 +8,10 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import Map from 'ol/Map';
 import VectorSource from 'ol/source/Vector';
 import { DragPan } from 'ol/interaction';
-import { Canton, Pole, Project } from '../model';
+import { Canton } from '../model/Canton';
+import { Pole } from '../model/Pole';
+import { Project } from '../model/Project';
+
 
 /** Drawing mode enumeration */
 export type DrawingMode = 'none' | 'pole' | 'canton' | 'rotate' | 'move' | 'remove-canton' | 'remove-pole';
@@ -21,10 +24,7 @@ export class MapStateService {
   // DATA STORAGE
   // ============================================================
 
-  // poles: Pole[] = [];
-  // cantons: Canton[] = [];
-
-  project!: Project;
+  project: Project = new Project([], []); // Holds all poles and cantons; replaces separate arrays
 
   // ============================================================
   // OPENLAYERS REFERENCES (set during map initialization)
