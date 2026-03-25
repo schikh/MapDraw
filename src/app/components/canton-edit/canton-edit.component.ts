@@ -23,8 +23,16 @@ import { CantonService } from '../../services/canton.service';
         <div class="modal-header">
           <div class="modal-title-row">
             <i class="bi bi-bezier2 me-2 text-info"></i>
-            <h5 id="cantonModalTitle" class="mb-0">Canton Details</h5>
+            <h5 id="cantonModalTitle" class="mb-0">Canton: {{ canton.id }}</h5>
           </div>
+
+              <button
+                class="btn-add-line"
+                (click)="addLine()"
+                title="Add a line to this canton">
+                <i class="bi bi-plus-lg"></i> Add Line
+              </button>
+
           <button class="btn-icon" (click)="cancel()" title="Close">
             <i class="bi bi-x-lg"></i>
           </button>
@@ -33,27 +41,20 @@ import { CantonService } from '../../services/canton.service';
         <!-- Body -->
         <div class="modal-body" *ngIf="canton">
 
-          <!-- Read-only metadata -->
-          <div class="field-group">
-            <label class="field-label">ID</label>
-            <div class="field-readonly">{{ canton.id }}</div>
-          </div>
-          
-          <hr class="divider">
-
           <!-- Lines -->
           <div class="lines-section">
+            
+            <!--
             <div class="lines-header">
               <div class="field-label mb-0">Lines</div>
               <button
                 class="btn-add-line"
                 (click)="addLine()"
-                [disabled]="canton.sections.length === 0"
                 title="Add a line to this canton">
                 <i class="bi bi-plus-lg"></i> Add Line
               </button>
             </div>
-
+            -->
             <div class="line-rows" *ngIf="lines.length > 0">
               <div class="line-row" *ngFor="let line of lines; let li = index">
                 <span class="line-index">{{ li + 1 }}</span>
