@@ -1,14 +1,17 @@
+import { jsonIgnore } from "json-ignore";
 import { Pole } from "./Pole";
 
 export class Section {
-    /** Pole at the start of the section */
-    public startPole: Pole;
 
-    /** Pole at the end of the section */
+     @jsonIgnore()
+     public startPole: Pole;
+
+    @jsonIgnore()
     public endPole: Pole;
 
     /** Span length between the two poles (m), computed from pole positions */
-    public length: number;
+     @jsonIgnore()
+     public length: number;
 
     constructor(startPole: Pole, endPole: Pole) {
         this.startPole = startPole;
@@ -16,9 +19,7 @@ export class Section {
         this.length = startPole.distanceTo(endPole);
     }
 
-    public static fromJSON(json: any): Section {
-        const startPole = Pole.fromJSON(json.startPole);
-        const endPole = Pole.fromJSON(json.endPole);
+    public static fromJSON(json: any, startPole: Pole, endPole: Pole): Section {
         return new Section(startPole, endPole);
     }
 }

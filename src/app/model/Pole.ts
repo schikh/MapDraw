@@ -32,7 +32,6 @@ export class Pole {
         //this.coordinates = [this.position.x, this.position.y];
         this.createdAt = new Date().toISOString();
     }
-
     /**
      * Euclidean distance to another pole.
      */

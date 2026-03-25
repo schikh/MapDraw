@@ -112,9 +112,7 @@ export class LineSection {
         );
     }
 
-    public static fromJSON(json: any): LineSection {
-        const line = Line.fromJSON(json.line);
-        const section = Section.fromJSON(json.section);
+    public static fromJSON(json: any, line: Line, section: Section): LineSection {
         const lineSection = new LineSection(line, section);
         lineSection.constraint = json.constraint ?? 0;
         return lineSection;

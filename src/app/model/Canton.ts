@@ -1,3 +1,4 @@
+import { jsonIgnore } from "json-ignore";
 import { Line } from "./Line";
 import { LineSection } from "./LineSection";
 import { Pole } from "./Pole";
@@ -11,8 +12,12 @@ import { Section } from "./Section";
  *   (the line spans the full extent of the canton).
  */
 export class Canton {
+    
     public id: string;
+    
+    @jsonIgnore()
     public poles: Pole[] = [];
+    
     public sections: Section[] = [];
     public lines: Line[] = [];
     public poleIds: string[] = []; // Array of pole IDs forming the polyline
@@ -73,14 +78,29 @@ export class Canton {
         return 'canton-' + Math.random().toString(36).substr(2, 9);
     }
 
-    public static fromJSON(json: any): Canton {
+    public static fromJSON(json: any, poles: Pole[]): Canton {
         const canton = new Canton();
         canton.id = json.id;
         canton.poleIds = json.poleIds ?? [];
         canton.createdAt = json.createdAt;
-        canton.poles = (json.poles ?? []).map((p: any) => Pole.fromJSON(p));
-        canton.sections = (json.sections ?? []).map((s: any) => Section.fromJSON(s));
-        canton.lines = (json.lines ?? []).map((l: any) => Line.fromJSON(l));
+        canton.poles = canton.poleIds.map((id: string) => poles.find(p => p.id === id)!);
+
+        //canton.sections = (json.sections ?? []).map((s: any, index: number) => Section.fromJSON(s, canton.poles[index], canton.poles[index + 1]));
+        canton.sections = [];
+        for(var i=0; i<json.sections.length; i++) {
+          var jsonSection = json.sections[i];
+          var section = Section.fromJSON(jsonSection, canton.poles[i], canton.poles[i + 1]);
+          canton.sections.push(section);
+        }
+
+        //canton.lines = (json.lines ?? []).map((l: any) => Line.fromJSON(l, canton.sections));
+        canton.lines = [];
+        for(var i=0; i<json.lines.length; i++) {
+          var jsonLine = json.lines[i];
+          var line = Line.fromJSON(jsonLine, canton.sections);
+          canton.lines.push(line);
+        }
+
         return canton;
     }
 }

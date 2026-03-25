@@ -1,5 +1,7 @@
+import { jsonIgnore } from "json-ignore";
 import { appSettings, Cable } from "../config/AppSettings";
 import { LineSection } from "./LineSection";
+import { Section } from "./Section";
 
 export class Line {
 
@@ -9,40 +11,26 @@ export class Line {
 
     public type: string;
 
-    get cable(): Cable {
-      return appSettings.getCable(this.type)!;
-    }
-
-    /** Collection of LineSections that reference this line */
     public lineSections: LineSection[] = [];
 
     public maxConstraint: number = 0;
 
-    // constructor(params: {
-    //     type: Line;
-    //     sectionArea: number;
-    //     diameter: number;
-    //     weight: number;
-    //     carrierWeight: number;
-    //     expansionCoefficient: number;
-    //     elasticityModulus: number;
-    //     normalTraction: number;
-    //     specificWeight: number;
-    // }) {
-    //     this.type = params.type;
-    //     this.sectionArea = params.sectionArea;
-    //     this.diameter = params.diameter;
-    //     this.weight = params.weight;
-    //     this.createdAt = new Date().toISOString();
-    //     this.carrierWeight = params.carrierWeight;
-    //     this.expansionCoefficient = params.expansionCoefficient;
-    //     this.elasticityModulus = params.elasticityModulus;
-    //     this.normalTraction = params.normalTraction;
-    //     this.specificWeight = params.specificWeight;
-    // }
+    @jsonIgnore()
+    get cable(): Cable {
+      return appSettings.getCable(this.type)!;
+    }
 
-    public static fromJSON(json: any): Line {
+    public static fromJSON(json: any, sections: Section[]): Line {
         const line = new Line(json.type);
+
+        line.lineSections = [];
+        for(var i=0; i<line.lineSections.length; i++) {
+          var jsonLs = json.lineSections[i];
+          var section = sections[i];
+          var ls = LineSection.fromJSON(jsonLs, line, section);
+          line.lineSections.push(ls);
+        }
+
         line.maxConstraint = json.maxConstraint ?? 0;
         return line;
     }

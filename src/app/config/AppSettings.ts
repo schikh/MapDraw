@@ -84,7 +84,7 @@ export class PoleType {
     typeAliases: string[];
 
     /** Optional security coefficients */
-    securityCoefficients?: SecurityCoefficients;
+    securityCoefficients: number;
 
     constructor(json: Record<string, unknown>) {
         this.key          = (json['Key'] as string) ?? '';
@@ -92,11 +92,7 @@ export class PoleType {
         this.symmetric    = (json['Symmetric'] as number) ?? 0;
         this.blockName    = (json['BlockName'] as string) ?? '';
         this.typeAliases  = (json['TypeAliases'] as string[]) ?? [];
-
-        const sc = json['SecurityCoefficients'] as Record<string, number> | undefined;
-        if (sc) {
-            this.securityCoefficients = { middle: sc['Middle'] ?? 0 };
-        }
+        this.securityCoefficients = (json['securityCoefficients'] as number) ?? 1.9;
     }
 }
 

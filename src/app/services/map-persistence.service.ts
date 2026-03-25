@@ -26,7 +26,7 @@ export class MapPersistenceService {
    */
   saveState(): void {
     try {
-      const data: Project = {
+      const data: any = {
         poles: this.state.project.poles,
         cantons: this.state.project.cantons
       };
@@ -49,50 +49,15 @@ export class MapPersistenceService {
       const rawPoles: any[] = data.poles ?? [];
       const rawCantons: any[] = data.cantons ?? [];
 
-      // Reconstruct Pole instances; handles legacy data that stored `coordinates`
       var poles = rawPoles.map((sp: any) => {
-        const pos = new Position(sp.position.x, sp.position.y);
-        return new Pole(
-          sp.id,
-          sp.strength ?? 500,
-          sp.height ?? 12,
-          sp.rotation ?? 0,
-          sp.aboveGroundHeight ?? 10,
-          pos,
-        );
+        return Pole.fromJSON(sp);
       });
 
       var cantons = rawCantons.map((sc: any) => {
-        const canton = new Canton();
-        const resolvedPoles: Pole[] = (sc.poleIds ?? [])
-          .map((id: string) => poles.find(p => p.id === id)!)
-          .filter((p: Pole) => p !== undefined);
-        for (const pole of resolvedPoles) {
-          canton.addPole(pole);
-        }
-        return canton;
+        return Canton.fromJSON(sc, poles);
       });
 
-      // Rehydrate lines and lineSections
-      for (let i = 0; i < rawCantons.length; i++) {
-        const rawCanton = rawCantons[i];
-        const canton = cantons[i];
-        if (rawCanton.lines) {
-          for (const rawLine of rawCanton.lines) {
-            const line = new Line(rawLine.type);
-            line.maxConstraint = rawLine.maxConstraint ?? 0;
-            canton.addLine(line);
-            // Set constraints from saved lineSections
-            if (rawLine.lineSections) {
-              for (let k = 0; k < Math.min(line.lineSections.length, rawLine.lineSections.length); k++) {
-                line.lineSections[k].constraint = rawLine.lineSections[k].constraint ?? 0;
-              }
-            }
-          }
-        }
-      }
-
-      this.state.project = new Project(cantons, poles);
+      this.state.project = new Project(poles, cantons);
     } catch (error) {
       console.error('Failed to load state:', error);
       this.state.project = new Project([], []);
