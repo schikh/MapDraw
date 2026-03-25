@@ -47,7 +47,6 @@ const DEFAULT_ZOOM = 18;
 export class MapService implements OnDestroy {
   // Re-expose observables from state service for component consumers
   readonly mode$ = this.state.mode$;
-  readonly message$ = this.state.message$;
   readonly cursorCoords$ = this.state.cursorCoords$;
   readonly stats$ = this.state.stats$;
   readonly editPole$ = this.state.editPole$;

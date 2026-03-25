@@ -28,22 +28,6 @@ import { Pole } from '../../model/Pole';
         <span>{{ cursorCoordinates || 'Move cursor over map' }}</span>
       </div>
 
-      <!-- Message Toast -->
-      <div 
-        class="message-toast"
-        *ngIf="message"
-        [class.toast-success]="message.type === 'success'"
-        [class.toast-error]="message.type === 'error'"
-        [class.toast-info]="message.type === 'info'">
-        <i class="bi me-2"
-           [class.bi-check-circle-fill]="message.type === 'success'"
-           [class.bi-exclamation-triangle-fill]="message.type === 'error'"
-           [class.bi-info-circle-fill]="message.type === 'info'">
-        </i>
-        <span>{{ message.text }}</span>
-        <button class="btn-close btn-close-white ms-2" (click)="dismissMessage()"></button>
-      </div>
-
       <!-- Loading Overlay -->
       <div class="loading-overlay" *ngIf="isLoading">
         <div class="spinner-border text-primary" role="status">
@@ -103,55 +87,6 @@ import { Pole } from '../../model/Pole';
       backdrop-filter: blur(4px);
       -webkit-backdrop-filter: blur(4px);
       border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    /* Message Toast */
-    .message-toast {
-      position: absolute;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 10px 16px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      z-index: 1000;
-      font-size: 0.875rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      animation: slideDown 0.3s ease;
-      max-width: 90%;
-    }
-
-    @keyframes slideDown {
-      from {
-        opacity: 0;
-        transform: translateX(-50%) translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-      }
-    }
-
-    .toast-success {
-      background: rgba(25, 135, 84, 0.95);
-      color: #fff;
-    }
-
-    .toast-error {
-      background: rgba(220, 53, 69, 0.95);
-      color: #fff;
-    }
-
-    .toast-info {
-      background: rgba(13, 110, 253, 0.95);
-      color: #fff;
-    }
-
-    .message-toast .btn-close {
-      font-size: 0.65rem;
-      padding: 0;
-      opacity: 0.8;
     }
 
     /* Loading Overlay */
@@ -233,11 +168,6 @@ import { Pole } from '../../model/Pole';
         font-size: 0.7rem;
         padding: 4px 8px;
       }
-
-      .message-toast {
-        font-size: 0.8rem;
-        padding: 8px 12px;
-      }
     }
   `]
 })
@@ -245,14 +175,12 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('mapContainer') mapContainer!: ElementRef<HTMLDivElement>;
 
   cursorCoordinates = '';
-  message: { type: 'success' | 'error' | 'info'; text: string } | null = null;
   isLoading = true;
 
   editingPole: Pole | null = null;
   editingCanton: Canton | null = null;
 
   private coordsSubscription?: Subscription;
-  private messageSubscription?: Subscription;
   private editPoleSubscription?: Subscription;
   private editCantonSubscription?: Subscription;
 
@@ -261,9 +189,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     this.coordsSubscription = this.mapService.cursorCoords$.subscribe(coords => {
       this.cursorCoordinates = coords;
-    });
-    this.messageSubscription = this.mapService.message$.subscribe(msg => {
-      this.message = msg;
     });
     this.editPoleSubscription = this.mapService.editPole$.subscribe(pole => {
       this.editingCanton = null;
@@ -284,7 +209,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.coordsSubscription?.unsubscribe();
-    this.messageSubscription?.unsubscribe();
     this.editPoleSubscription?.unsubscribe();
     this.editCantonSubscription?.unsubscribe();
   }
@@ -302,7 +226,4 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     this.editingCanton = null;
   }
 
-  dismissMessage(): void {
-    this.message = null;
-  }
 }

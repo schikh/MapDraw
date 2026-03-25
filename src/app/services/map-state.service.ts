@@ -5,6 +5,7 @@
 
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 import Map from 'ol/Map';
 import VectorSource from 'ol/source/Vector';
 import { DragPan } from 'ol/interaction';
@@ -56,18 +57,18 @@ export class MapStateService {
   // ============================================================
 
   private modeSubject = new BehaviorSubject<DrawingMode>('none');
-  private messageSubject = new BehaviorSubject<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
   private cursorCoordsSubject = new BehaviorSubject<string>('');
   private statsSubject = new BehaviorSubject<{ poles: number; cantons: number }>({ poles: 0, cantons: 0 });
   private editPoleSubject = new Subject<Pole>();
   private editCantonSubject = new Subject<Canton>();
 
   readonly mode$ = this.modeSubject.asObservable();
-  readonly message$ = this.messageSubject.asObservable();
   readonly cursorCoords$ = this.cursorCoordsSubject.asObservable();
   readonly stats$ = this.statsSubject.asObservable();
   readonly editPole$ = this.editPoleSubject.asObservable();
   readonly editCanton$ = this.editCantonSubject.asObservable();
+
+  constructor(private toastr: ToastrService) {}
 
   // ============================================================
   // STATE METHODS
@@ -99,16 +100,18 @@ export class MapStateService {
     this.editCantonSubject.next(canton);
   }
 
-  /** Shows a status message to the user. Auto-clears non-error messages after 5 seconds. */
+  /** Shows a toast notification to the user via ngx-toastr. */
   showMessage(type: 'success' | 'error' | 'info', text: string): void {
-    this.messageSubject.next({ type, text });
-    if (type !== 'error') {
-      setTimeout(() => {
-        const current = this.messageSubject.getValue();
-        if (current?.text === text) {
-          this.messageSubject.next(null);
-        }
-      }, 5000);
+    switch (type) {
+      case 'success':
+        this.toastr.success(text);
+        break;
+      case 'error':
+        this.toastr.error(text, '', { disableTimeOut: true });
+        break;
+      case 'info':
+        this.toastr.info(text);
+        break;
     }
   }
 
