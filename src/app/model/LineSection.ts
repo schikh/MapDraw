@@ -5,6 +5,18 @@ import { settings } from "../config/Settings";
 import { jsonIgnore } from "json-ignore";
 
 export class LineSection {
+
+    constructor(line: Line, section: Section) {
+        this.line = line;
+        this.section = section;
+    }
+
+    public hangingHeight: number = 0;
+    public sag: number = 0;
+    public windConstraint: number = 0;
+    public mecanicalConstraint: number = 0;
+    public linked: boolean = true;
+
     /** The cable/line running through this section */
     @jsonIgnore()
     public line: Line;
@@ -13,14 +25,7 @@ export class LineSection {
     @jsonIgnore()
     public section: Section;
 
-    constructor(line: Line, section: Section) {
-        this.line = line;
-        this.section = section;
-    }
-
-    public constraint: number = 0; // Current tension constraint (kg/mm²)
-
-    /**
+        /**
      * Computes all overload parameters for this LineSection's line and section.
      *
      * @param windSpeed  Wind speed (m/s) — defaults to settings.WindSpeed
@@ -114,7 +119,11 @@ export class LineSection {
 
     public static fromJSON(json: any, line: Line, section: Section): LineSection {
         const lineSection = new LineSection(line, section);
-        lineSection.constraint = json.constraint ?? 0;
+        lineSection.hangingHeight = json.hangingHeight ?? 0;
+        lineSection.sag = json.sag ?? 0;
+        lineSection.windConstraint = json.windConstraint ?? 0;
+        lineSection.mecanicalConstraint = json.mecanicalConstraint ?? 0;
+        lineSection.linked = json.linked ?? true;
         return lineSection;
     }
 }

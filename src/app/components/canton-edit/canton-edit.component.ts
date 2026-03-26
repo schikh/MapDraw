@@ -57,9 +57,7 @@ import { CantonService } from '../../services/canton.service';
             -->
             <div class="line-rows" *ngIf="lines.length > 0">
               <div class="line-row" *ngFor="let line of lines; let li = index">
-                <span class="line-index">{{ li + 1 }}</span>
-
-                <!-- Type dropdown -->
+                <!-- Cable dropdown -->
                 <select
                   class="line-type-select"
                   [ngModel]="line.type"
@@ -67,11 +65,18 @@ import { CantonService } from '../../services/canton.service';
                   <option *ngFor="let cable of cables" [value]="cable.type">{{ cable.type }}</option>
                 </select>
 
-                <!-- LineSection constraints -->
-                <span class="ls-chip" *ngFor="let ls of line.lineSections; let si = index"
-                  title="Span {{ si + 1 }} constraint">
-                  S{{ si + 1 }}: {{ ls.constraint | number:'1.2-2' }}
-                </span>
+                <!-- LineSections display -->
+                <ng-container *ngFor="let ls of line.lineSections">
+                  <div class="ls-box" [class.linked]="ls.linked">
+                    <div class="ls-values">
+                      <div>H: {{ ls.hangingHeight | number:'1.2-2' }}</div>
+                      <div>S: {{ ls.sag | number:'1.2-2' }}</div>
+                    </div>
+                    <svg *ngIf="ls.linked" class="ls-curve" viewBox="0 0 60 30">
+                      <path d="M0,5 Q30,30 60,5" stroke="#63b3ed" stroke-width="2" fill="none"/>
+                    </svg>
+                  </div>
+                </ng-container>
 
                 <!-- Max constraint spinner -->
                 <span class="max-constraint-group">
@@ -85,6 +90,7 @@ import { CantonService } from '../../services/canton.service';
                     step="0.1" />
                 </span>
 
+                <!-- Delete button -->
                 <button class="btn-remove-line" (click)="removeLine(li)" title="Remove line">
                   <i class="bi bi-trash"></i>
                 </button>
@@ -107,6 +113,37 @@ import { CantonService } from '../../services/canton.service';
     </div>
   `,
   styles: [`
+    .ls-box {
+      display: inline-block;
+      position: relative;
+      width: 70px;
+      height: 48px;
+      margin: 0 4px;
+      background: url('/assets/ls-bg.svg') center/cover no-repeat;
+      border-radius: 6px;
+      border: 1px solid #333;
+      vertical-align: middle;
+      overflow: hidden;
+    }
+    .ls-box.linked {
+      border-color: #63b3ed;
+      box-shadow: 0 0 0 2px #63b3ed44;
+    }
+    .ls-values {
+      position: absolute;
+      top: 4px;
+      left: 6px;
+      font-size: 0.7rem;
+      color: #fff;
+      z-index: 2;
+    }
+    .ls-curve {
+      position: absolute;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
     .modal-backdrop {
       position: fixed;
       inset: 0;

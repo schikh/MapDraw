@@ -47,11 +47,6 @@ import { Pole } from '../../model/Pole';
             </div>
           </div>
 
-          <div class="field-group mb-3">
-            <label class="field-label">Created</label>
-            <div class="field-readonly">{{ draft.createdAt | date:'medium' }}</div>
-          </div>
-
           <hr class="divider">
 
           <!-- Editable fields -->

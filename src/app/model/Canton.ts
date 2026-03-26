@@ -21,11 +21,10 @@ export class Canton {
     public sections: Section[] = [];
     public lines: Line[] = [];
     public poleIds: number[] = []; // Array of pole IDs forming the polyline
-    public createdAt: string;
+
 
     constructor(id: number) {
         this.id = id;
-        this.createdAt = new Date().toISOString();
     }
 
     /**
@@ -73,7 +72,6 @@ export class Canton {
     public static fromJSON(json: any, poles: Pole[]): Canton {
         const canton = new Canton(json.id);
         canton.poleIds = json.poleIds ?? [];
-        canton.createdAt = json.createdAt;
         canton.poles = canton.poleIds.map((id: number) => poles.find(p => p.id === id)!);
 
         //canton.sections = (json.sections ?? []).map((s: any, index: number) => Section.fromJSON(s, canton.poles[index], canton.poles[index + 1]));

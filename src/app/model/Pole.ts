@@ -18,10 +18,6 @@ export class Pole {
     /** 3-D position of the pole */
     public position: Position;
 
-    //public coordinates: [number, number];
-
-    public createdAt: string;
-
     constructor(id: number, strength: number, height: number, rotation: number, aboveGroundHeight: number, position: Position) {
         this.id = id;
         this.strength = strength;
@@ -29,9 +25,8 @@ export class Pole {
         this.rotation = rotation;
         this.aboveGroundHeight = aboveGroundHeight;
         this.position = position;
-        //this.coordinates = [this.position.x, this.position.y];
-        this.createdAt = new Date().toISOString();
     }
+    
     /**
      * Euclidean distance to another pole.
      */
