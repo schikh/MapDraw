@@ -45,31 +45,75 @@ import { CantonService } from '../../services/canton.service';
           <div class="lines-section">
             
             <div class="line-rows" *ngIf="lines.length > 0">
-              <div class="line-row" *ngFor="let line of lines; let li = index">
-                <!-- Cable dropdown -->
-                <select
-                  class="line-type-select"
-                  [ngModel]="line.type"
-                  (ngModelChange)="onTypeChange(line, $event)">
-                  <option *ngFor="let cable of cables" [value]="cable.type">{{ cable.type }}</option>
-                </select>
+
+
+
+              <div class="line-row d-flex gap-0">
+
+                <!-- Cable dropdown --> 
+                <label>Cable</label>
 
                 <!-- LineSections display -->
-                <ng-container *ngFor="let ls of line.lineSections">
-                  <div class="ls-box" [class.linked]="ls.linked">
-                    <div class="ls-values">
-                      <div>H: {{ ls.hangingHeight | number:'1.2-2' }}</div>
-                      <div>S: {{ ls.sag | number:'1.2-2' }}</div>
-                    </div>
-                    <svg *ngIf="ls.linked" class="ls-curve" viewBox="0 0 60 30">
-                      <path d="M0,5 Q30,30 60,5" stroke="#63b3ed" stroke-width="2" fill="none"/>
-                    </svg>
-                  </div>
+                <ng-container *ngFor="let s of canton.sections">
+                <label>xxxx</label>
                 </ng-container>
 
                 <!-- Max constraint spinner -->
+                <label>Max Constraint</label>
+
+                <label></label>
+
+              </div>
+
+
+              <div class="line-row d-flex gap-0" *ngFor="let line of lines; let li = index">
+
+                <!-- Cable dropdown --> 
+                <span>
+                  <select
+                    class="line-type-select"
+                    [ngModel]="line.type"
+                    (ngModelChange)="onTypeChange(line, $event)">
+                    <option *ngFor="let cable of cables" [value]="cable.type">{{ cable.type }}</option>
+                  </select>
+                </span>
+
+                <!-- LineSections display -->
+                <ng-container *ngFor="let ls of line.lineSections">
+                  <div class="">
+                    <svg width="17" height="60" viewBox="0 0 7 60">
+                      <rect x="0" y="0"  width="5" height="60" fill="#888" />
+                      <rect x="1" y="3"  width="3" height="4"  fill="black"/>
+                      <rect x="1" y="13"  width="3" height="4"  fill="black"/>
+                      <rect x="1" y="23"  width="3" height="4"  fill="black"/>
+                      <rect x="1" y="33"  width="3" height="4"  fill="black"/>
+                      <rect x="1" y="43"  width="3" height="4"  fill="black"/>
+                      <rect x="1" y="53"  width="3" height="4"  fill="black"/>
+                    </svg>
+                  </div>
+                  <div class="ls-box" [class.linked]="ls.linked">
+                      <div class="ls-values">
+                        <div>H: {{ ls.hangingHeight | number:'1.2-2' }}</div>
+                        <div>S: {{ ls.sag | number:'1.2-2' }}</div>
+                      </div>
+                      <svg *ngIf="ls.linked" class="ls-curve" viewBox="0 0 60 30">
+                        <path d="M0,5 Q30,30 60,5" stroke="#63b3ed" stroke-width="1" fill="none"/>
+                      </svg>
+                  </div>
+                </ng-container>
+
+                <svg width="7" height="60" viewBox="0 0 7 60">
+                  <rect x="0" y="0"  width="5" height="60" fill="#888" />
+                  <rect x="1" y="3"  width="3" height="4"  fill="black"/>
+                  <rect x="1" y="13"  width="3" height="4"  fill="black"/>
+                  <rect x="1" y="23"  width="3" height="4"  fill="black"/>
+                  <rect x="1" y="33"  width="3" height="4"  fill="black"/>
+                  <rect x="1" y="43"  width="3" height="4"  fill="black"/>
+                  <rect x="1" y="53"  width="3" height="4"  fill="black"/>
+                </svg>                
+
+                <!-- Max constraint spinner -->
                 <span class="max-constraint-group">
-                  <label class="max-constraint-label">Max</label>
                   <input
                     type="number"
                     class="max-constraint-input"
@@ -83,6 +127,7 @@ import { CantonService } from '../../services/canton.service';
                 <button class="btn-remove-line" (click)="removeLine(li)" title="Remove line">
                   <i class="bi bi-trash"></i>
                 </button>
+
               </div>
             </div>
 
