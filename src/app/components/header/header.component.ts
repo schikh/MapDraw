@@ -102,32 +102,7 @@ import { CommonModule } from '@angular/common';
     </div>
     <div class="modal-backdrop fade show" *ngIf="isAboutVisible" (click)="hideAbout()"></div>
   `,
-  styles: [`
-    :host {
-      display: block;
-    }
-    
-    .navbar {
-      padding: 0.5rem 1rem;
-      z-index: 1030;
-      background: var(--app-bg-dark, #1a1a2e);
-      border-bottom: 1px solid var(--app-border-color, rgba(255, 255, 255, 0.1));
-    }
-    
-    .navbar-brand {
-      font-size: 1.25rem;
-    }
-    
-    .modal-content {
-      background-color: var(--app-bg-dark, #1a1a2e);
-      border: 1px solid var(--app-border-color, rgba(255, 255, 255, 0.1));
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    }
-    
-    .modal-backdrop {
-      background-color: rgba(0, 0, 0, 0.7);
-    }
-  `]
+  styles: []
 })
 export class HeaderComponent {
   isAboutVisible = false;

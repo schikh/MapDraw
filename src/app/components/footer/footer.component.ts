@@ -33,22 +33,7 @@ import { CommonModule } from '@angular/common';
       </div>
     </footer>
   `,
-  styles: [`
-    :host {
-      display: block;
-    }
-    
-    .footer {
-      padding: 0.5rem 0;
-      z-index: 1020;
-      background: var(--app-bg-dark, #1a1a2e);
-      border-top: 1px solid var(--app-border-color, rgba(255, 255, 255, 0.1));
-    }
-    
-    small {
-      font-size: 0.75rem;
-    }
-  `]
+  styles: []
 })
 export class FooterComponent {
   currentYear = new Date().getFullYear();

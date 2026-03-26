@@ -41,42 +41,7 @@ import { MapComponent } from './components/map/map.component';
       <app-footer></app-footer>
     </div>
   `,
-  styles: [`
-    :host {
-      display: block;
-      height: 100vh;
-      width: 100vw;
-      overflow: hidden;
-    }
-
-    .app-container {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      width: 100%;
-      background: var(--app-bg-dark, #1a1a2e);
-    }
-
-    .main-content {
-      flex: 1;
-      display: flex;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .map-area {
-      flex: 1;
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* Responsive Adjustments */
-    @media (max-width: 768px) {
-      .main-content {
-        flex-direction: column;
-      }
-    }
-  `]
+  styles: []
 })
 export class AppComponent {
   title = 'MapDraw - Pole & Canton Drawing Application';

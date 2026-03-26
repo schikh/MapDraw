@@ -24,7 +24,7 @@ export class Line {
         const line = new Line(json.type);
 
         line.lineSections = [];
-        for(var i=0; i<line.lineSections.length; i++) {
+        for(var i=0; i<json.lineSections.length; i++) {
           var jsonLs = json.lineSections[i];
           var section = sections[i];
           var ls = LineSection.fromJSON(jsonLs, line, section);
