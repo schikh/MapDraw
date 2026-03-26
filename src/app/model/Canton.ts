@@ -13,18 +13,18 @@ import { Section } from "./Section";
  */
 export class Canton {
     
-    public id: string;
+    public id: number;
     
     @jsonIgnore()
     public poles: Pole[] = [];
     
     public sections: Section[] = [];
     public lines: Line[] = [];
-    public poleIds: string[] = []; // Array of pole IDs forming the polyline
+    public poleIds: number[] = []; // Array of pole IDs forming the polyline
     public createdAt: string;
 
-    constructor() {
-        this.id = this.generateId();
+    constructor(id: number) {
+        this.id = id;
         this.createdAt = new Date().toISOString();
     }
 
@@ -70,20 +70,11 @@ export class Canton {
         }
     }
 
-    /**
-     * Generates a unique ID for the canton.
-     * @returns A unique string ID
-     */
-    private generateId(): string {
-        return 'canton-' + Math.random().toString(36).substr(2, 9);
-    }
-
     public static fromJSON(json: any, poles: Pole[]): Canton {
-        const canton = new Canton();
-        canton.id = json.id;
+        const canton = new Canton(json.id);
         canton.poleIds = json.poleIds ?? [];
         canton.createdAt = json.createdAt;
-        canton.poles = canton.poleIds.map((id: string) => poles.find(p => p.id === id)!);
+        canton.poles = canton.poleIds.map((id: number) => poles.find(p => p.id === id)!);
 
         //canton.sections = (json.sections ?? []).map((s: any, index: number) => Section.fromJSON(s, canton.poles[index], canton.poles[index + 1]));
         canton.sections = [];

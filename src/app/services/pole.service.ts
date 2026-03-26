@@ -34,6 +34,7 @@ export class PoleService {
    * Validates minimum distance from existing poles.
    */
   addPole(coordinate: [number, number]): void {
+
     const tooClose = this.state.project.poles.some(pole => {
       const poleCoord = fromLonLat([pole.position.x, pole.position.y]) as [number, number];
       const distance = this.calculateDistance(coordinate, poleCoord);
@@ -47,7 +48,7 @@ export class PoleService {
 
     const lonLat = toLonLat(coordinate) as [number, number];
     const pole = new Pole(
-      this.state.generateId(), 500, 12, 0, 10,
+      this.state.project.getNextPoleId(), 500, 12, 0, 10,
       new Position(lonLat[0], lonLat[1], 0)
     );
 
@@ -61,7 +62,7 @@ export class PoleService {
   /**
    * Removes the pole with the given id from data and map.
    */
-  removePole(poleId: string): void {
+  removePole(poleId: number): void {
     this.state.project.poles = this.state.project.poles.filter(p => p.id !== poleId);
     const feature = this.state.poleSource.getFeatureById(`pole-${poleId}`);
     if (feature) this.state.poleSource.removeFeature(feature as Feature);

@@ -1,4 +1,4 @@
-import { Calculator } from "./Calculator";
+import { Calculator } from "../services/Calculator";
 import { Line } from "./Line";
 import { Section } from "./Section";
 import { settings } from "../config/Settings";

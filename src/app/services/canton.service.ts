@@ -35,10 +35,7 @@ export class CantonService {
   handleCantonClick(coordinate: [number, number]): void {
     const pole = this.poleService.findPoleAtCoordinate(coordinate);
 
-    if (!pole) {
-      this.state.showMessage('error', 'Click on a pole to add it to the canton.');
-      return;
-    }
+    if (!pole) return;
 
     // Prevent adding the same pole twice in a row
     if (this.state.cantonPoleIds.length > 0 &&
@@ -70,7 +67,7 @@ export class CantonService {
     }
 
     // Create the canton and wire up Sections via addPole()
-    const canton = new Canton();
+    const canton = new Canton(this.state.project.getNextCantonId());
     const resolvedPoles = this.state.cantonPoleIds
       .map(id => this.state.project.poles.find(p => p.id === id)!)
       .filter((p): p is Pole => p !== undefined);
@@ -96,7 +93,7 @@ export class CantonService {
   /**
    * Removes the canton with the given id from data and map.
    */
-  removeCanton(cantonId: string): void {
+  removeCanton(cantonId: number): void {
     this.state.project.cantons = this.state.project.cantons.filter(c => c.id !== cantonId);
     const feature = this.state.cantonSource.getFeatureById(`canton-${cantonId}`);
     if (feature) this.state.cantonSource.removeFeature(feature);

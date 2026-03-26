@@ -8,9 +8,9 @@ describe('LineSection.calcConstraintAtConditions', () => {
     
     // Setup cable and poles as in the demo
     const cable = new Line('ALU 34.4');
-    const pole1 = new Pole("1", 500, 12, 45, 10, new Position(0, 0, 0));
-    const pole2 = new Pole("2", 500, 12, 135, 10, new Position(164, 0, 0));
-    const canton = new Canton();
+    const pole1 = new Pole(1, 500, 12, 45, 10, new Position(0, 0, 0));
+    const pole2 = new Pole(2, 500, 12, 135, 10, new Position(164, 0, 0));
+    const canton = new Canton(1);
     canton.addPole(pole1);
     canton.addPole(pole2);
     canton.addLine(cable);

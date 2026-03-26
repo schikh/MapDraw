@@ -43,12 +43,12 @@ export class MapStateService {
   // ============================================================
 
   currentMode: DrawingMode = 'none';
-  cantonPoleIds: string[] = [];
+  cantonPoleIds: number[] = [];
   lastMousePosition: [number, number] | null = null;
 
   // Selection / interaction state
-  selectedPoleId: string | null = null;
-  selectedCantonId: string | null = null;
+  selectedPoleId: number | null = null;
+  selectedCantonId: number | null = null;
   isRotating = false;
   isMoving = false;
 
@@ -129,10 +129,5 @@ export class MapStateService {
       poles: this.project.poles.length,
       cantons: this.project.cantons.length
     };
-  }
-
-  /** Generates a unique ID for features. */
-  generateId(): string {
-    return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   }
 }

@@ -2,7 +2,7 @@ import { Position } from "./Position";
 
 export class Pole {
 
-    public id: string;
+    public id: number;
 
     /** Allowable load (kg) */
     public strength: number;
@@ -22,7 +22,7 @@ export class Pole {
 
     public createdAt: string;
 
-    constructor(id: string, strength: number, height: number, rotation: number, aboveGroundHeight: number, position: Position) {
+    constructor(id: number, strength: number, height: number, rotation: number, aboveGroundHeight: number, position: Position) {
         this.id = id;
         this.strength = strength;
         this.height = height;

@@ -16,15 +16,25 @@ export class Project {
 
     // ── Query helpers ──────────────────────────────────────
 
-    getPole(id: string): Pole | undefined {
+    /** Generates a unique ID for features. */
+    getNextPoleId(): number {
+      if (this.poles.length === 0) return 1;
+      return Math.max(...this.poles.map(p => p.id)) + 1;
+    }
+
+    getNextCantonId(): number {
+      if (this.cantons.length === 0) return 1;
+      return Math.max(...this.cantons.map(c => c.id)) + 1;
+    }
+    getPole(id: number): Pole | undefined {
         return this.poles.find((p) => p.id === id);
     }
 
-    getCanton(id: string): Canton | undefined {
+    getCanton(id: number): Canton | undefined {
         return this.cantons.find((c) => c.id === id);
     }
 
-    getCantonsByPole(poleId: string): Canton[] {
+    getCantonsByPole(poleId: number): Canton[] {
         return this.cantons.filter((c) => c.poleIds.includes(poleId));
     }
 

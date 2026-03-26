@@ -1,5 +1,5 @@
 import { settings } from "../config/Settings";
-import { square, solveCubic } from "./MathUtils";
+import { square, solveCubic } from "../model/MathUtils";
 
 export class Calculator {
     // ──────────────────────────────────────────────
