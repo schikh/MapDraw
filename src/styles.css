@@ -311,15 +311,24 @@ app-map { display: block; height: 100%; width: 100%; }
 .btn-add-line:hover:not(:disabled) { background: rgba(99,179,237,0.28); }
 .btn-add-line:disabled             { opacity: 0.4; cursor: not-allowed; }
 
-.line-rows { display: flex; flex-direction: column;     /* gap: 8px; }
+.line-rows { display: flex; flex-direction: column;     /* gap: 8px; */ }
 .line-row  {
-  display: flex; align-items: center; 
-  background: rgba(255,255,255,0.04); 
+  display: inline-flex; align-items: center; 
+  /* background: rgba(255,255,255,0.04);  */
   flex-wrap: nowrap; white-space: nowrap;
 
-      /* border: 1px solid rgba(255, 255, 255, 0.08); */
+      border: 1px solid rgba(255, 255, 255, 0.08);
     /* border-radius: 6px; */
     /* padding: 8px 10px; gap: 8px; */
+        height: 60px;
+}
+
+.line-row-item  {
+    display: flex; align-items: center; 
+  /* flex-wrap: nowrap; white-space: nowrap; */
+    height: 60px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    gap: 10px;
 }
 
 .line-type-select        { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; border-radius: 5px; padding: 5px 8px; font-size: 0.82rem; outline: none; cursor: pointer; }
@@ -338,7 +347,7 @@ app-map { display: block; height: 100%; width: 100%; }
 .ls-values      { position: absolute; top: 4px; left: 6px; font-size: 0.7rem; color: #fff; z-index: 2; }
 .ls-curve       { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
 
-.max-constraint-group { display: inline-flex; align-items: center; gap: 4px; margin-left: auto; }
+.max-constraint-group { display: inline-flex; align-items: center; gap: 4px; margin-right: auto; }
 .max-constraint-label { font-size: 0.72rem; color: rgba(255,255,255,0.45); white-space: nowrap; }
 .max-constraint-input {
   width: 72px; background: rgba(255,255,255,0.08);
@@ -349,7 +358,8 @@ app-map { display: block; height: 100%; width: 100%; }
 .max-constraint-input:focus { border-color: var(--app-accent-blue); }
 
 .btn-remove-line {
-  background: transparent; border: none;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.15);
   color: rgba(255,100,100,0.6); cursor: pointer;
   padding: 4px 6px; border-radius: 4px; font-size: 0.85rem;
   transition: color 0.15s, background 0.15s;
@@ -377,4 +387,8 @@ app-map { display: block; height: 100%; width: 100%; }
   .sidebar.collapsed { width: 50px; height: auto; }
   .toggle-btn { right: -10px; }
   .coordinates-display { bottom: 35px; right: 5px; font-size: 0.7rem; padding: 4px 8px; }
+}
+
+.debug {
+  border: #dc3545 1px dashed;
 }

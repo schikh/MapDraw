@@ -21,6 +21,7 @@ import { CantonService } from '../../services/canton.service';
 
         <!-- Header -->
         <div class="modal-header">
+
           <div class="modal-title-row">
             <i class="bi bi-bezier2 me-2 text-info"></i>
             <h5 id="cantonModalTitle" class="mb-0">Canton: {{ canton.id }}</h5>
@@ -38,98 +39,82 @@ import { CantonService } from '../../services/canton.service';
           </button>
         </div>
 
+<div class="d-flex p-3" >
+
+    <!-- Left fixed column -->
+    <div class="" style="xxxwidth: 200px;">
+         <div class="line-row-item xxxd-flex xxxalign-items-center" *ngFor="let line of lines; let li = index">
+            <select
+              style="width: 150px;"
+              class="line-type-select p-2"
+              [ngModel]="line.type"
+              (ngModelChange)="onTypeChange(line, $event)">
+              <option *ngFor="let cable of cables" [value]="cable.type">{{ cable.type }}</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Middle scrollable area -->
+    <div class="flex-grow-1 overflow-auto">
+        <div class="d-flex flex-column" style="min-width: 400px; max-width: 800px;"> 
+
+          <div class="line-row" *ngFor="let line of lines; let li = index">
+            <!-- LineSections display -->
+            <ng-container *ngFor="let ls of line.lineSections">
+              <div class="">
+                <svg width="10" height="60" viewBox="0 0 10 60">
+                  <rect x="0" y="0"  width="10" height="60" fill="#888" />
+                  <rect x="1" y="3"  width="6" height="4"  fill="black"/>
+                  <rect x="1" y="13"  width="6" height="4"  fill="black"/>
+                  <rect x="1" y="23"  width="6" height="4"  fill="black"/>
+                  <rect x="1" y="33"  width="6" height="4"  fill="black"/>
+                  <rect x="1" y="43"  width="6" height="4"  fill="black"/>
+                  <rect x="1" y="53"  width="6" height="4"  fill="black"/>
+                </svg>
+              </div>
+              <div class="ls-box" [class.linked]="ls.linked">
+                  <div class="ls-values">
+                    <div>H: {{ ls.hangingHeight | number:'1.2-2' }}</div>
+                    <div>S: {{ ls.sag | number:'1.2-2' }}</div>
+                  </div>
+                  <svg *ngIf="ls.linked" class="ls-curve" viewBox="0 0 60 30">
+                    <path d="M0,5 Q30,30 60,5" stroke="#63b3ed" stroke-width="1" fill="none"/>
+                  </svg>
+              </div>
+            </ng-container>
+          </div>
+          
+        </div>
+    </div>
+
+    <!-- Right fixed column -->
+    <div class="" style="XXXwidth: 200px;">
+
+         <div class="line-row-item" *ngFor="let line of lines; let li = index">
+            <span class="xxxmax-constraint-group xxxp-1 d-flex gap-2">
+              <input
+                type="number"
+                class="max-constraint-input p-2"
+                [ngModel]="line.maxConstraint"
+                (ngModelChange)="line.maxConstraint = $event"
+                min="0"
+                step="0.1"
+                style="width: 80px;" />
+
+                <button class="btn-remove-line p-2" (click)="removeLine(li)" title="Remove line">
+                    <i class="bi bi-trash"></i>
+                </button>                
+            </span>
+
+        </div>
+    </div>
+</div>
+
         <!-- Body -->
         <div class="modal-body" *ngIf="canton">
 
           <!-- Lines -->
           <div class="lines-section">
-            
-            <div class="line-rows" *ngIf="lines.length > 0">
-
-
-
-              <div class="line-row d-flex gap-0">
-
-                <!-- Cable dropdown --> 
-                <label>Cable</label>
-
-                <!-- LineSections display -->
-                <ng-container *ngFor="let s of canton.sections">
-                <label>xxxx</label>
-                </ng-container>
-
-                <!-- Max constraint spinner -->
-                <label>Max Constraint</label>
-
-                <label></label>
-
-              </div>
-
-
-              <div class="line-row d-flex gap-0" *ngFor="let line of lines; let li = index">
-
-                <!-- Cable dropdown --> 
-                <span>
-                  <select
-                    class="line-type-select"
-                    [ngModel]="line.type"
-                    (ngModelChange)="onTypeChange(line, $event)">
-                    <option *ngFor="let cable of cables" [value]="cable.type">{{ cable.type }}</option>
-                  </select>
-                </span>
-
-                <!-- LineSections display -->
-                <ng-container *ngFor="let ls of line.lineSections">
-                  <div class="">
-                    <svg width="17" height="60" viewBox="0 0 7 60">
-                      <rect x="0" y="0"  width="5" height="60" fill="#888" />
-                      <rect x="1" y="3"  width="3" height="4"  fill="black"/>
-                      <rect x="1" y="13"  width="3" height="4"  fill="black"/>
-                      <rect x="1" y="23"  width="3" height="4"  fill="black"/>
-                      <rect x="1" y="33"  width="3" height="4"  fill="black"/>
-                      <rect x="1" y="43"  width="3" height="4"  fill="black"/>
-                      <rect x="1" y="53"  width="3" height="4"  fill="black"/>
-                    </svg>
-                  </div>
-                  <div class="ls-box" [class.linked]="ls.linked">
-                      <div class="ls-values">
-                        <div>H: {{ ls.hangingHeight | number:'1.2-2' }}</div>
-                        <div>S: {{ ls.sag | number:'1.2-2' }}</div>
-                      </div>
-                      <svg *ngIf="ls.linked" class="ls-curve" viewBox="0 0 60 30">
-                        <path d="M0,5 Q30,30 60,5" stroke="#63b3ed" stroke-width="1" fill="none"/>
-                      </svg>
-                  </div>
-                </ng-container>
-
-                <svg width="7" height="60" viewBox="0 0 7 60">
-                  <rect x="0" y="0"  width="5" height="60" fill="#888" />
-                  <rect x="1" y="3"  width="3" height="4"  fill="black"/>
-                  <rect x="1" y="13"  width="3" height="4"  fill="black"/>
-                  <rect x="1" y="23"  width="3" height="4"  fill="black"/>
-                  <rect x="1" y="33"  width="3" height="4"  fill="black"/>
-                  <rect x="1" y="43"  width="3" height="4"  fill="black"/>
-                  <rect x="1" y="53"  width="3" height="4"  fill="black"/>
-                </svg>                
-
-                <!-- Max constraint spinner -->
-                <span class="max-constraint-group">
-                  <input
-                    type="number"
-                    class="max-constraint-input"
-                    [ngModel]="line.maxConstraint"
-                    (ngModelChange)="line.maxConstraint = $event"
-                    min="0"
-                    step="0.1" />
-                </span>
-
-                <!-- Delete button -->
-                <button class="btn-remove-line" (click)="removeLine(li)" title="Remove line">
-                  <i class="bi bi-trash"></i>
-                </button>
-
-              </div>
-            </div>
 
             <div class="no-lines" *ngIf="lines.length === 0">
               No lines added yet.
@@ -152,9 +137,9 @@ export class CantonEditComponent implements OnChanges {
   @Input() canton!: Canton;
   @Output() cancelled = new EventEmitter<void>();
 
-   constructor(
-     private cantonService: CantonService
-   ) {}
+  constructor(
+    private cantonService: CantonService
+  ) { }
 
   totalLength = 0;
 
