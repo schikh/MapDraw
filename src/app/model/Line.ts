@@ -29,6 +29,7 @@ export class Line {
           var section = sections[i];
           var ls = LineSection.fromJSON(jsonLs, line, section);
           line.lineSections.push(ls);
+          section.lineSections.push(ls);
         }
 
         line.maxConstraint = json.maxConstraint ?? 0;

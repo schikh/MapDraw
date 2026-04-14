@@ -1,5 +1,7 @@
 import { jsonIgnore } from "json-ignore";
 import { Pole } from "./Pole";
+import { LineSection } from "./LineSection";
+
 
 export class Section {
 
@@ -12,6 +14,9 @@ export class Section {
     /** Span length between the two poles (m), computed from pole positions */
      @jsonIgnore()
      public length: number;
+
+     @jsonIgnore()
+     public lineSections: LineSection[] = [];
 
     constructor(startPole: Pole, endPole: Pole) {
         this.startPole = startPole;

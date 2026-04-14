@@ -66,6 +66,7 @@ export class Canton {
         for (const section of this.sections) {
             const ls = new LineSection(line, section);
             line.lineSections.push(ls);
+            section.lineSections.push(ls);
         }
     }
 
