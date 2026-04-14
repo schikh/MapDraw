@@ -15,6 +15,8 @@ export class Line {
 
     public maxConstraint: number = 0;
 
+    public hangingHeight: number = 0.2;
+
     @jsonIgnore()
     get cable(): Cable {
       return appSettings.getCable(this.type)!;

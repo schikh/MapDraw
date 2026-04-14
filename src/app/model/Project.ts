@@ -47,4 +47,9 @@ export class Project {
         var cantons = rawCantons.map((sc: any) => Canton.fromJSON(sc, poles));
         return new Project(poles, cantons);
     }
+
+    calc(): void {
+        //canton.forEach
+        //pole.forEach
+    }
 }

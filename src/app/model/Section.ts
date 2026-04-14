@@ -27,4 +27,12 @@ export class Section {
     public static fromJSON(json: any, startPole: Pole, endPole: Pole): Section {
         return new Section(startPole, endPole);
     }
+
+    public calcLineSectionMecanicalsConstraints(): void {
+        this.lineSections.forEach (ls => {
+            //TODO: rename maxConstraint into Constraint
+            ls.mecanicalConstraintStart = ls.line.maxConstraint / ls.line.hangingHeight * this.startPole.aboveGroundHeight;
+            ls.mecanicalConstraintEnd = ls.line.maxConstraint / ls.line.hangingHeight * this.endPole.aboveGroundHeight;
+        });
+    }
 }

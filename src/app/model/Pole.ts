@@ -2,6 +2,15 @@ import { Position } from "./Position";
 
 export class Pole {
 
+    constructor(id: number, strength: number, height: number, rotation: number, aboveGroundHeight: number, position: Position) {
+        this.id = id;
+        this.strength = strength;
+        this.height = height;
+        this.rotation = rotation;
+        this.aboveGroundHeight = aboveGroundHeight;
+        this.position = position;
+    }
+
     public id: number;
 
     /** Allowable load (kg) */
@@ -17,15 +26,6 @@ export class Pole {
 
     /** 3-D position of the pole */
     public position: Position;
-
-    constructor(id: number, strength: number, height: number, rotation: number, aboveGroundHeight: number, position: Position) {
-        this.id = id;
-        this.strength = strength;
-        this.height = height;
-        this.rotation = rotation;
-        this.aboveGroundHeight = aboveGroundHeight;
-        this.position = position;
-    }
     
     /**
      * Euclidean distance to another pole.

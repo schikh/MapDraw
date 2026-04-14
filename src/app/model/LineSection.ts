@@ -14,7 +14,8 @@ export class LineSection {
     public hangingHeight: number = 0;
     public sag: number = 0;
     public windConstraint: number = 0;
-    public mecanicalConstraint: number = 0;
+    public mecanicalConstraintStart: number = 0;
+    public mecanicalConstraintEnd: number = 0;
     public linked: boolean = true;
 
     /** The cable/line running through this section */
