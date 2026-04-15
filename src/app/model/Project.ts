@@ -48,8 +48,9 @@ export class Project {
         return new Project(poles, cantons);
     }
 
-    calc(): void {
-        //canton.forEach
-        //pole.forEach
+    calcCantonMecanicalForce(): void {
+        this.cantons.forEach(canton => {
+            canton.calcSectionsMecanicalConstraint();
+        });
     }
 }

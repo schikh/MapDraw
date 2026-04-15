@@ -29,10 +29,8 @@ export class Section {
     }
 
     public calcLineSectionMecanicalsConstraints(): void {
-        this.lineSections.forEach (ls => {
-            //TODO: rename maxConstraint into Constraint
-            ls.mecanicalConstraintStart = ls.line.maxConstraint / ls.line.hangingHeight * this.startPole.aboveGroundHeight;
-            ls.mecanicalConstraintEnd = ls.line.maxConstraint / ls.line.hangingHeight * this.endPole.aboveGroundHeight;
+        this.lineSections.forEach ( ls => {
+            ls.calcLineSectionMecanicalsConstraints();
         });
     }
 }

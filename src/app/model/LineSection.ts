@@ -123,8 +123,16 @@ export class LineSection {
         lineSection.hangingHeight = json.hangingHeight ?? 0;
         lineSection.sag = json.sag ?? 0;
         lineSection.windConstraint = json.windConstraint ?? 0;
-        lineSection.mecanicalConstraint = json.mecanicalConstraint ?? 0;
+        lineSection.mecanicalConstraintStart = json.mecanicalConstraintStart ?? 0;
+        lineSection.mecanicalConstraintEnd = json.mecanicalConstraintEnd ?? 0;
         lineSection.linked = json.linked ?? true;
         return lineSection;
+    }
+
+    public calcLineSectionMecanicalsConstraints(): void {
+            const maxConstraint = 1;
+            //TODO: rename maxConstraint into Constraint
+            this.mecanicalConstraintStart = this.line.cable.maxConstraint / this.line.hangingHeight * this.section.startPole.aboveGroundHeight;
+            this.mecanicalConstraintEnd = this.line.cable.maxConstraint / this.line.hangingHeight * this.section.endPole.aboveGroundHeight;
     }
 }

@@ -94,7 +94,9 @@ export class Canton {
         return canton;
     }
 
-    calc(): void {
-        //Sections.calcLineSectionMecanicalConstraint
+    public calcSectionsMecanicalConstraint(): void {
+        this.sections.forEach(sec => {
+            sec.calcLineSectionMecanicalsConstraints();
+        });
     }
 }
