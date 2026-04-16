@@ -60,7 +60,13 @@ export class Canton {
                 "Cannot add a line: the canton has no sections (add at least two poles first).",
             );
         }
-
+        if (this.lines.length > 0) {
+            line.hangingHeight = this.lines[this.lines.length - 1].hangingHeight + 0.2;
+        }
+        else {
+            line.hangingHeight = 0.2;
+        }
+        
         this.lines.push(line);
 
         for (const section of this.sections) {

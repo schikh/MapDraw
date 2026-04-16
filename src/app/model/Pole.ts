@@ -1,3 +1,4 @@
+import { Vector } from "./Vector";
 import { Position } from "./Position";
 
 export class Pole {
@@ -26,6 +27,8 @@ export class Pole {
 
     /** 3-D position of the pole */
     public position: Position;
+
+    public mechanicalConstraint: Vector = new Vector(0, 0);
     
     /**
      * Euclidean distance to another pole.

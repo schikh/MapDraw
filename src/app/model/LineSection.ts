@@ -3,6 +3,8 @@ import type { Line } from "./Line";
 import type { Section } from "./Section";
 import { settings } from "../config/Settings";
 import { jsonIgnore } from "json-ignore";
+import { Vector } from "./Vector";
+import { Position } from "./Position";
 
 export class LineSection {
 
@@ -11,7 +13,6 @@ export class LineSection {
         this.section = section;
     }
 
-    public hangingHeight: number = 0;
     public sag: number = 0;
     public windConstraint: number = 0;
     public mecanicalConstraintStart: number = 0;
@@ -120,7 +121,6 @@ export class LineSection {
 
     public static fromJSON(json: any, line: Line, section: Section): LineSection {
         const lineSection = new LineSection(line, section);
-        lineSection.hangingHeight = json.hangingHeight ?? 0;
         lineSection.sag = json.sag ?? 0;
         lineSection.windConstraint = json.windConstraint ?? 0;
         lineSection.mecanicalConstraintStart = json.mecanicalConstraintStart ?? 0;
@@ -134,5 +134,13 @@ export class LineSection {
             //TODO: rename maxConstraint into Constraint
             this.mecanicalConstraintStart = this.line.maxConstraint / (this.section.startPole.aboveGroundHeight - this.line.hangingHeight) * this.section.startPole.aboveGroundHeight;
             this.mecanicalConstraintEnd = this.line.maxConstraint / (this.section.endPole.aboveGroundHeight - this.line.hangingHeight) * this.section.endPole.aboveGroundHeight;
+    }
+
+    public getMechanicalConstraintStartVector(): Vector {
+        return Vector.getVector(this.mecanicalConstraintStart, this.section.startPole.position, this.section.endPole.position);
+    }
+
+    public getMechanicalConstraintEndVector(): Vector {
+        return Vector.getVector(this.mecanicalConstraintEnd, this.section.endPole.position, this.section.startPole.position);
     }
 }

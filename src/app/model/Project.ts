@@ -1,5 +1,8 @@
+import { flatMap, map } from 'rxjs';
 import { Canton } from './Canton';
+import { LineSection } from './LineSection';
 import { Pole } from './Pole';
+import { Vector } from './Vector';
 
 /**
  * Project is the single top-level container for all application data.
@@ -48,9 +51,23 @@ export class Project {
         return new Project(poles, cantons);
     }
 
-    calcCantonMecanicalForce(): void {
+    calcPoleMechanicalConstraint(): void {
         this.cantons.forEach(canton => {
             canton.calcSectionsMecanicalConstraint();
         });
+        const lineSections = this.getAllLineSections();
+        this.poles.forEach(pole => {
+            const lsStartList = lineSections.filter(ls => pole === ls.section.startPole);
+            const lsStartVectors = lsStartList.map(ls => ls.getMechanicalConstraintStartVector());
+            const reduceStart = lsStartVectors.reduce((a, v) => a.add(v), new Vector(0, 0));
+            const lsEndList = lineSections.filter(ls => pole === ls.section.endPole);
+            const lsEndVectors = lsEndList.map(ls => ls.getMechanicalConstraintEndVector());
+            const reduceEnd = lsEndVectors.reduce((a, v) => a.add(v), new Vector(0, 0));
+            pole.mechanicalConstraint = reduceStart.add(reduceEnd);
+        });
+    }
+
+    getAllLineSections(): LineSection[] {
+        return this.cantons.flatMap(canton => canton.sections.flatMap(section => section.lineSections));
     }
 }
