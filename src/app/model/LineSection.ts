@@ -132,7 +132,7 @@ export class LineSection {
     public calcLineSectionMecanicalsConstraints(): void {
             const maxConstraint = 1;
             //TODO: rename maxConstraint into Constraint
-            this.mecanicalConstraintStart = this.line.cable.maxConstraint / this.line.hangingHeight * this.section.startPole.aboveGroundHeight;
-            this.mecanicalConstraintEnd = this.line.cable.maxConstraint / this.line.hangingHeight * this.section.endPole.aboveGroundHeight;
+            this.mecanicalConstraintStart = this.line.maxConstraint / (this.section.startPole.aboveGroundHeight - this.line.hangingHeight) * this.section.startPole.aboveGroundHeight;
+            this.mecanicalConstraintEnd = this.line.maxConstraint / (this.section.endPole.aboveGroundHeight - this.line.hangingHeight) * this.section.endPole.aboveGroundHeight;
     }
 }

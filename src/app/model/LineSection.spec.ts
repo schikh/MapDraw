@@ -76,6 +76,21 @@ describe('LineSection.calcConstraintAtConditions', () => {
     console.log('constraint', round(constraint));
   });
 
+  it('calcSectionsMecanicalConstraint', () => {
+    // Arrange
+    const canton = createCanton(164);
+    canton.lines[0].maxConstraint = 10;
+    canton.lines[0].hangingHeight = 0.2;
+    // Act
+    canton.calcSectionsMecanicalConstraint();
+    // Assert
+    const lineSection = canton.sections[0].lineSections[0];
+    // 10 / (10 - 0.2) * 10 = 10.204...
+    expect(Math.round(lineSection.mecanicalConstraintStart * 1000) / 1000).toBe(10.204);
+    expect(Math.round(lineSection.mecanicalConstraintEnd * 1000) / 1000).toBe(10.204);
+    console.log(lineSection.mecanicalConstraintStart);
+    console.log(lineSection.mecanicalConstraintEnd);    
+  });
 });
 
 function createCanton(dist: number): Canton {
