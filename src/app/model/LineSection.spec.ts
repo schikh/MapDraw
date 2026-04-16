@@ -18,7 +18,7 @@ describe('LineSection.calcConstraintAtConditions', () => {
       1      // overload2
     );
     // Assert
-    expect(Math.round(constraint * 1000) / 1000).toBe(2.873);
+    expect(round(constraint * 1000) / 1000).toBe(2.873);
     console.log('constraint', round(constraint));
   });
 
@@ -36,7 +36,7 @@ describe('LineSection.calcConstraintAtConditions', () => {
       1      // overload2
     );
     // Assert
-    expect(Math.round(constraint * 1000) / 1000).toBe(3.304);
+    expect(round(constraint * 1000) / 1000).toBe(3.304);
     console.log('constraint', round(constraint));
   });
 
@@ -54,7 +54,7 @@ describe('LineSection.calcConstraintAtConditions', () => {
       1      // overload2
     );
     // Assert
-    expect(Math.round(constraint * 1000) / 1000).toBe(2.682);
+    expect(round(constraint * 1000) / 1000).toBe(2.682);
     console.log('constraint', round(constraint));
   });
 
@@ -72,7 +72,7 @@ describe('LineSection.calcConstraintAtConditions', () => {
       1      // overload2
     );
     // Assert
-    expect(Math.round(constraint * 1000) / 1000).toBe(2.903);
+    expect(round(constraint * 1000) / 1000).toBe(2.903);
     console.log('constraint', round(constraint));
   });
 
@@ -86,10 +86,10 @@ describe('LineSection.calcConstraintAtConditions', () => {
     // Assert
     const lineSection = canton.sections[0].lineSections[0];
     // 10 / (10 - 0.2) * 10 = 10.204...
-    expect(Math.round(lineSection.mecanicalConstraintStart * 1000) / 1000).toBe(10.204);
-    expect(Math.round(lineSection.mecanicalConstraintEnd * 1000) / 1000).toBe(10.204);
-    console.log(lineSection.mecanicalConstraintStart);
-    console.log(lineSection.mecanicalConstraintEnd);    
+    expect(round(lineSection.mecanicalConstraintStart * 1000) / 1000).toBe(10.204);
+    expect(round(lineSection.mecanicalConstraintEnd * 1000) / 1000).toBe(10.204);
+    console.log(round(lineSection.mecanicalConstraintStart));
+    console.log(round(lineSection.mecanicalConstraintEnd));    
   });
 });
 
