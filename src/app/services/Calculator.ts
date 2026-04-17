@@ -32,13 +32,9 @@ export class Calculator {
         diameter: number,
         windSpeed: number,
     ): number {
-        const C = settings.DragCoefficient;
-        const coeff =
-            sectionLength > 100
-                ? settings.SummerCoefficientLow
-                : settings.SummerCoefficientHigh;
-        const Q = Calculator.airDynamicPressure(windSpeed);
-        return C * diameter * Q * coeff;
+        const coeff = sectionLength > 100 ? settings.SummerCoefficientLow : settings.SummerCoefficientHigh;
+        const windForcePerMeter = this.getWindForcePerMeter(diameter, windSpeed);
+        return windForcePerMeter * coeff;
     }
 
     /**
@@ -52,10 +48,15 @@ export class Calculator {
         diameter: number,
         windSpeed: number,
     ): number {
-        const C = settings.DragCoefficient;
         const coeff = settings.WinterCoefficient;
+        const windForcePerMeter = this.getWindForcePerMeter(diameter, windSpeed);
+        return windForcePerMeter * coeff;
+    }
+
+    public static getWindForcePerMeter(diameter: number, windSpeed: number): number {
+        const C = settings.DragCoefficient;
         const Q = Calculator.airDynamicPressure(windSpeed);
-        return C * diameter * Q * coeff;
+        return C * diameter * Q;
     }
 
     /**

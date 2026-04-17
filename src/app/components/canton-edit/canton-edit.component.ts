@@ -74,7 +74,7 @@ import { CantonService } from '../../services/canton.service';
               </div>
               <div class="ls-box" [class.linked]="ls.linked">
                   <div class="ls-values">
-                    <div>H: {{ ls.hangingHeight | number:'1.2-2' }}</div>
+                    <!-- <div>H: {{ ls.hangingHeight | number:'1.2-2' }}</div> -->
                     <div>S: {{ ls.sag | number:'1.2-2' }}</div>
                   </div>
                   <svg *ngIf="ls.linked" class="ls-curve" viewBox="0 0 60 30">

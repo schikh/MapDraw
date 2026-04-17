@@ -70,4 +70,23 @@ export class Project {
     getAllLineSections(): LineSection[] {
         return this.cantons.flatMap(canton => canton.sections.flatMap(section => section.lineSections));
     }
+
+    calcWindForce(): void {
+        const lineSections = this.getAllLineSections();
+        this.poles.forEach(p => {
+            const lsStartList = lineSections.filter(ls => p === ls.section.startPole);
+            const lsEndList = lineSections.filter(ls => p === ls.section.endPole);
+            const windConstraints = Array(360).fill(null).map((_, i) => i).map(a => {
+                    const angle = a * Math.PI / 180;
+                    const reduceStart = lsStartList.map(ls => ls.getWindConstraintStartVector(angle)).reduce((acc, v) => acc + v, 0);
+                    const reduceEnd = lsEndList.map(ls => ls.getWindConstraintEndVector(angle)).reduce((acc, v) => acc + v, 0);
+                    const windConstraint = reduceStart + reduceEnd;
+                    return new Vector(windConstraint, angle);
+                });
+            const maxWindConstraint = windConstraints.reduce((max, current) => 
+                current > max ? current : max, new Vector(0, 0)
+            );
+            p.windConstraint = maxWindConstraint;
+        });
+    }
 }

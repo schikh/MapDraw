@@ -29,6 +29,8 @@ export class Pole {
     public position: Position;
 
     public mechanicalConstraint: Vector = new Vector(0, 0);
+
+    public windConstraint: Vector = new Vector(0, 0);
     
     /**
      * Euclidean distance to another pole.

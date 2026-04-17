@@ -4,7 +4,6 @@ import type { Section } from "./Section";
 import { settings } from "../config/Settings";
 import { jsonIgnore } from "json-ignore";
 import { Vector } from "./Vector";
-import { Position } from "./Position";
 
 export class LineSection {
 
@@ -142,5 +141,20 @@ export class LineSection {
 
     public getMechanicalConstraintEndVector(): Vector {
         return Vector.getVector(this.mecanicalConstraintEnd, this.section.endPole.position, this.section.startPole.position);
+    }
+
+    getWindConstraintStartVector(angle: number): number {
+        const diameter = this.line.cable.diameter;
+        const windSpeed = settings.WindSpeed;
+        const windForcePerMeter = Calculator.getWindForcePerMeter(diameter, windSpeed);
+        const windForce = windForcePerMeter * Math.sqrt((this.section.endPole.position.x - this.section.startPole.position.x)**2 + (this.section.endPole.position.y - this.section.startPole.position.y)**2);
+        return (windForce/(this.section.startPole.aboveGroundHeight - this.line.hangingHeight) * this.section.startPole.aboveGroundHeight)/2;
+    }
+    getWindConstraintEndVector(angle: number): number {
+        const diameter = this.line.cable.diameter;
+        const windSpeed = settings.WindSpeed;
+        const windForcePerMeter = Calculator.getWindForcePerMeter(diameter, windSpeed);
+        const windForce = windForcePerMeter * Math.sqrt((this.section.endPole.position.x - this.section.startPole.position.x)**2 + (this.section.endPole.position.y - this.section.startPole.position.y)**2);
+        return (windForce/(this.section.endPole.aboveGroundHeight - this.line.hangingHeight) * this.section.endPole.aboveGroundHeight)/2;
     }
 }
