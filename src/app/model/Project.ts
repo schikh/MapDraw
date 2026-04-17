@@ -58,10 +58,10 @@ export class Project {
         const lineSections = this.getAllLineSections();
         this.poles.forEach(pole => {
             const lsStartList = lineSections.filter(ls => pole === ls.section.startPole);
-            const lsStartVectors = lsStartList.map(ls => ls.getMechanicalConstraintStartVector());
-            const reduceStart = lsStartVectors.reduce((a, v) => a.add(v), new Vector(0, 0));
             const lsEndList = lineSections.filter(ls => pole === ls.section.endPole);
+            const lsStartVectors = lsStartList.map(ls => ls.getMechanicalConstraintStartVector());
             const lsEndVectors = lsEndList.map(ls => ls.getMechanicalConstraintEndVector());
+            const reduceStart = lsStartVectors.reduce((a, v) => a.add(v), new Vector(0, 0));
             const reduceEnd = lsEndVectors.reduce((a, v) => a.add(v), new Vector(0, 0));
             pole.mechanicalConstraint = reduceStart.add(reduceEnd);
         });
