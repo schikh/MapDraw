@@ -119,20 +119,16 @@ describe('project.calcPoleMechanicalConstraint3poles', () => {
     // Third pole on top of the second one at a 100m distance and the first one it to its right at 100m on the x axis
     const project = createProject(3, 0, 100); 
     const canton = project.cantons[0];
-    const length = canton.sections[0].length;
-    const dragCoef = settings.DragCoefficient;
-    const diameter = canton.lines[0].cable.diameter / 1000;
+    const lengthLine1 = canton.sections[0].length;
+    const lengthLine2 = canton.sections[1].length;
     const Q = 75.006;
     // Act
     project.calcWindForce();
     //Assert
-    const coefLine1 = project.poles[0].aboveGroundHeight / (project.poles[0].aboveGroundHeight - canton.lines[0].hangingHeight);
-    const coefLine2 = project.poles[1].aboveGroundHeight / (project.poles[1].aboveGroundHeight - canton.lines[0].hangingHeight);
-    const windConstraintEndPole2 = coefLine1 * dragCoef * length * Q * diameter / 2;
-    const windConstraintStartPole2 = coefLine2 * dragCoef * length * Q * diameter / 2;
-    const ang = (canton.poles[0].windConstraint.add(canton.poles[1].windConstraint)).angle;
-    expect(canton.poles[1].windConstraint.intensity).toBeCloseTo(windConstraintEndPole2 + windConstraintStartPole2);
-    expect(ang * 180 / Math.PI).toBeCloseTo(Math.PI / 4 * 180 / Math.PI);
+    const coef = project.poles[0].aboveGroundHeight / (project.poles[0].aboveGroundHeight - canton.lines[0].hangingHeight);
+    const windConstraint = coef * settings.DragCoefficient * lengthLine1 * Q * canton.lines[0].cable.diameter / 1000 / 2;
+    expect(canton.poles[1].windConstraint.intensity).toBeCloseTo(canton.sections. * windConstraint));
+    expect(canton.poles[1].windConstraint.angle * 180 / Math.PI).toBeCloseTo(45);
   });
 });
 
