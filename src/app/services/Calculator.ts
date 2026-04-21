@@ -10,13 +10,12 @@ export class Calculator {
      * Dynamic pressure of air.
      * Q = (a × v²) / (2 × g)
      *
-     * @param windSpeed  Wind speed (m/s)
      * @returns Dynamic pressure (kg/m²)
      */
-    public static airDynamicPressure(windSpeed: number): number {
+    public static airDynamicPressure(): number {
         const g = settings.GravitationalForce;
         const a = settings.AirSpecificWeight;
-        return (a * square(windSpeed)) / (2 * g);
+        return (a * square(settings.WindSpeed)) / (2 * g);
     }
 
     /**
@@ -30,10 +29,9 @@ export class Calculator {
     public static getSummerWindForcePerMeter(
         sectionLength: number,
         diameter: number,
-        windSpeed: number,
     ): number {
         const coeff = sectionLength > 100 ? settings.SummerCoefficientLow : settings.SummerCoefficientHigh;
-        const windForcePerMeter = this.getWindForcePerMeter(diameter, windSpeed);
+        const windForcePerMeter = this.getWindForcePerMeter(diameter);
         return windForcePerMeter * coeff;
     }
 
@@ -46,16 +44,15 @@ export class Calculator {
      */
     public static getWinterWindForcePerMeter(
         diameter: number,
-        windSpeed: number,
     ): number {
         const coeff = settings.WinterCoefficient;
-        const windForcePerMeter = this.getWindForcePerMeter(diameter, windSpeed);
+        const windForcePerMeter = this.getWindForcePerMeter(diameter);
         return windForcePerMeter * coeff;
     }
 
-    public static getWindForcePerMeter(diameter: number, windSpeed: number): number {
+    public static getWindForcePerMeter(diameter: number): number {
         const C = settings.DragCoefficient;
-        const Q = Calculator.airDynamicPressure(windSpeed);
+        const Q = Calculator.airDynamicPressure();
         return C * diameter * Q;
     }
 

@@ -77,15 +77,17 @@ export class Project {
             const lsStartList = lineSections.filter(ls => p === ls.section.startPole);
             const lsEndList = lineSections.filter(ls => p === ls.section.endPole);
             const windConstraints = Array(360).fill(null).map((_, i) => i).map(a => {
+                    if(a == 90) {
+                        const xxx =0;
+                    }
                     const angle = a * Math.PI / 180;
                     const reduceStart = lsStartList.map(ls => ls.getWindConstraintStartVector(angle)).reduce((acc, v) => acc + v, 0);
                     const reduceEnd = lsEndList.map(ls => ls.getWindConstraintEndVector(angle)).reduce((acc, v) => acc + v, 0);
                     const windConstraint = reduceStart + reduceEnd;
-                    return new Vector(windConstraint, angle);
+                    return Vector.convert(windConstraint, angle);
                 });
-            const maxWindConstraint = windConstraints.reduce((max, current) => 
-                current > max ? current : max, new Vector(0, 0)
-            );
+            const maxWindConstraint = windConstraints.reduce((max, current) => {
+            return  current.intensity > max.intensity ? current : max }, new Vector(0, 0));
             p.windConstraint = maxWindConstraint;
         });
     }

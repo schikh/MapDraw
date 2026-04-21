@@ -29,10 +29,8 @@ export class LineSection {
         /**
      * Computes all overload parameters for this LineSection's line and section.
      *
-     * @param windSpeed  Wind speed (m/s) — defaults to settings.WindSpeed
      */
     public getOverloadParameters(
-        windSpeed: number = settings.WindSpeed,
     ): {
         overloadNoWind: number;
         summerOverload: number;
@@ -47,11 +45,9 @@ export class LineSection {
         const summerWindForce = Calculator.getSummerWindForcePerMeter(
             sectionLength,
             diameterInMeters,
-            windSpeed,
         );
         const winterWindForce = Calculator.getWinterWindForcePerMeter(
             diameterInMeters,
-            windSpeed,
         );
 
         const { overloadNoWind, summerOverload, winterOverload } =
@@ -144,17 +140,15 @@ export class LineSection {
     }
 
     getWindConstraintStartVector(angle: number): number {
-        const diameter = this.line.cable.diameter;
-        const windSpeed = settings.WindSpeed;
-        const windForcePerMeter = Calculator.getWindForcePerMeter(diameter, windSpeed);
-        const windForce = windForcePerMeter * Math.sqrt((this.section.endPole.position.x - this.section.startPole.position.x)**2 + (this.section.endPole.position.y - this.section.startPole.position.y)**2);
-        return (windForce/(this.section.startPole.aboveGroundHeight - this.line.hangingHeight) * this.section.startPole.aboveGroundHeight)/2;
+        const diameter = this.line.cable.diameter/1000;
+        const windForcePerMeter = Calculator.getWindForcePerMeter(diameter);
+        const windForce = windForcePerMeter * this.section.length;
+        return (windForce / (this.section.startPole.aboveGroundHeight - this.line.hangingHeight) * this.section.startPole.aboveGroundHeight) * Math.sin(angle) / 2;
     }
     getWindConstraintEndVector(angle: number): number {
-        const diameter = this.line.cable.diameter;
-        const windSpeed = settings.WindSpeed;
-        const windForcePerMeter = Calculator.getWindForcePerMeter(diameter, windSpeed);
-        const windForce = windForcePerMeter * Math.sqrt((this.section.endPole.position.x - this.section.startPole.position.x)**2 + (this.section.endPole.position.y - this.section.startPole.position.y)**2);
-        return (windForce/(this.section.endPole.aboveGroundHeight - this.line.hangingHeight) * this.section.endPole.aboveGroundHeight)/2;
+        const diameter = this.line.cable.diameter/1000;
+        const windForcePerMeter = Calculator.getWindForcePerMeter(diameter);
+        const windForce = windForcePerMeter * this.section.length;
+        return (windForce / (this.section.endPole.aboveGroundHeight - this.line.hangingHeight) * this.section.endPole.aboveGroundHeight) * Math.sin(angle) / 2;
     }
 }

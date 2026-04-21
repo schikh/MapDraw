@@ -12,3 +12,5 @@ describe('LineSection.calcConstraintAtConditions', () => {
     expect(v3.y).toBe(50);
   });
 });
+
+//describe('Calculator.getWindForcePerMeter')
