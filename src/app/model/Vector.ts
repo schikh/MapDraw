@@ -20,18 +20,9 @@ export class Vector {
         return new Vector(x, y);
     }
 
-    static convert(windConstraint: number, angle: number): Vector {
+    static getVector(windConstraint: number, angle: number): Vector {
         let x = windConstraint * Math.cos(angle);
         let y = windConstraint * Math.sin(angle);
-        return new Vector(x, y);
-    }
-
-    static getVector(intensity: number, startPos: Position, endPos: Position): Vector {
-        const X = endPos.x - startPos.x;
-        const Y = endPos.y - startPos.y;
-        const H = Math.sqrt(X**2 + Y**2);
-        const x = intensity * X / H;
-        const y = intensity * Y / H;
         return new Vector(x, y);
     }
 }

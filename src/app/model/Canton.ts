@@ -100,9 +100,9 @@ export class Canton {
         return canton;
     }
 
-    public calcSectionsMecanicalConstraint(): void {
-        this.sections.forEach(sec => {
-            sec.calcLineSectionMecanicalsConstraints();
-        });
-    }
+    // public calcSectionsMecanicalConstraint(): void {
+    //     this.sections.forEach(sec => {
+    //         sec.calcLineSectionMecanicalsConstraints();
+    //     });
+    // }
 }

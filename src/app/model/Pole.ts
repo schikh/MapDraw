@@ -31,12 +31,18 @@ export class Pole {
     public mechanicalConstraint: Vector = new Vector(0, 0);
 
     public windConstraint: Vector = new Vector(0, 0);
+
+    public totalConstraint: Vector = new Vector(0, 0);
     
     /**
      * Euclidean distance to another pole.
      */
     public distanceTo(other: Pole): number {
         return this.position.distanceTo(other.position);
+    }
+
+    public angleTo(other: Pole): number {
+        return this.position.angleTo(other.position);
     }
 
     public static fromJSON(json: any): Pole {
