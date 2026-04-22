@@ -11,6 +11,7 @@ import { Pole } from '../model/Pole';
 import { MapStateService } from './map-state.service';
 import { MapPersistenceService } from './map-persistence.service';
 import { Position } from '../model/Position';
+import { GeometryCollection, LineString } from 'ol/geom';
 
 const MIN_POLE_DISTANCE_METERS = 0.5; // 50cm minimum distance between poles
 const DEFAULT_CENTER_LAT = 50.8503;   // Brussels latitude for distance correction
@@ -77,11 +78,14 @@ export class PoleService {
    */
   updatePole(updated: Pole): void {
     const pole = this.state.project.poles.find(p => p.id === updated.id);
+    
     if (!pole) return;
+    
     pole.strength = updated.strength;
     pole.height = updated.height;
     pole.rotation = updated.rotation;
     pole.aboveGroundHeight = updated.aboveGroundHeight;
+
     this.state.poleSource.changed();
     this.persistence.saveState();
     this.state.showMessage('success', 'Pole updated.');
@@ -95,12 +99,25 @@ export class PoleService {
    * Renders a single pole as a point feature on the map.
    */
   renderPole(pole: Pole): void {
-    const feature = new Feature({
-      geometry: new Point(fromLonLat([pole.position.x, pole.position.y])),
-      poleId: pole.id
+    const poleGeometry = PoleService.getPoleDrawing(pole.position.x, pole.position.y);
+
+    const feature = new Feature({ 
+      pole: pole, // <= store the whole pole object in the feature
+      geometry: poleGeometry
     });
-    feature.setId(`pole-${pole.id}`);
+
+    feature.setId(`pole-${pole.id}`);    
     this.state.poleSource.addFeature(feature);
+  }
+
+  static getPoleDrawing(x: number, y: number): GeometryCollection {
+    return new GeometryCollection([
+      new Point(fromLonLat([x, y])),
+      new LineString([
+        fromLonLat([x, y]),
+        fromLonLat([x + 0.0005, y + 0.0005])
+      ])
+    ]);
   }
 
   // ============================================================
@@ -111,6 +128,9 @@ export class PoleService {
    * Finds a pole near the given coordinate (within click tolerance).
    */
   findPoleAtCoordinate(coordinate: [number, number]): Pole | null {
+    
+    //TODO: replace logic by retrieving the feature at coordinate and getting pole from it
+    
     const tolerance = this.state.map.getView().getResolution()! * 10; // 10 pixels tolerance
 
     for (const pole of this.state.project.poles) {

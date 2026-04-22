@@ -27,6 +27,7 @@ import { MapStyleService } from './map-style.service';
 import { MapPersistenceService } from './map-persistence.service';
 import { PoleService } from './pole.service';
 import { CantonService } from './canton.service';
+import { GeometryCollection } from 'ol/geom';
 
 export { DrawingMode } from './map-state.service';
 
@@ -196,7 +197,10 @@ export class MapService implements OnDestroy {
       if (this.state.currentMode === 'move' && this.state.selectedPoleId) {
         const poleFeature = this.state.poleSource.getFeatureById(`pole-${this.state.selectedPoleId}`) as Feature;
         if (poleFeature) {
-          const poleCoord = (poleFeature.getGeometry() as Point).getCoordinates();
+          //const poleCoord = (poleFeature.getGeometry() as Point).getCoordinates();
+          const geometries = poleFeature.getGeometry() as GeometryCollection;
+          const poleCoord = (geometries.getGeometries()[0] as Point).getCoordinates();
+          //const poleCoord = (poleFeature.getGeometry() as Point).getCoordinates();
           const distance = Math.sqrt(
             Math.pow(event.coordinate[0] - poleCoord[0], 2) +
             Math.pow(event.coordinate[1] - poleCoord[1], 2)
@@ -437,7 +441,7 @@ export class MapService implements OnDestroy {
 
     const feature = this.state.poleSource.getFeatureById(`pole-${pole.id}`) as Feature;
     if (feature) {
-      (feature.getGeometry() as Point).setCoordinates(coordinate);
+      feature.setGeometry(PoleService.getPoleDrawing(lonLat[0], lonLat[1]));
     }
 
     this.cantonService.refreshCantonFeatures();
@@ -459,6 +463,8 @@ export class MapService implements OnDestroy {
     pole.rotation = Math.round(angle);
     this.updateLever();
     this.state.poleSource.changed();
+
+    this.cantonService.refreshCantonFeatures();    
   }
 
   /**

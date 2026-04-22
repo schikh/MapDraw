@@ -49,10 +49,11 @@ export class MapStyleService {
    * Returns a style for a pole feature.
    */
   getPoleStyle(feature: Feature): Style {
-    const poleId = feature.get('poleId');
-    const pole = this.state.project.poles.find(p => p.id === poleId);
-    const rotation = pole ? (pole.rotation || 0) : 0;
-    const isSelected = (this.state.selectedPoleId === poleId);
+    // const poleId = feature.get('poleId');
+    // const pole = this.state.project.poles.find(p => p.id === poleId);
+    const pole = feature.get('pole');
+    const rotation = pole.rotation || 0;
+    const isSelected = (this.state.selectedPoleId === pole.id);
 
     return new Style({
       image: new Icon({
@@ -61,6 +62,11 @@ export class MapStyleService {
         anchor: [0.5, 0.5],
         anchorXUnits: 'fraction',
         anchorYUnits: 'fraction'
+      }),
+      stroke: new Stroke({
+        color:'#006600',
+        width: 2,
+        lineDash: [1, 1]
       })
     });
   }
