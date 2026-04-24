@@ -132,88 +132,63 @@ import { CantonService } from '../../services/canton.service';
                 </div>
               </ng-container>
 
-              <!-- ═══ Pole base row (section-centric: half-bases per section) ═══ -->
+              <!-- ═══ Pole base row (section-centric: both halves in one div) ═══ -->
               <div class="grid-cell pole-base-corner"></div>
               <ng-container *ngFor="let section of canton.sections; let si = index">
                 <div class="grid-cell section-base">
-                  <div class="section-base-content">
+                  <div class="base-combined">
                     <!-- Start pole: right half base -->
-                    <div class="half-base">
-                      <svg width="22" height="56" viewBox="22 0 22 56">
-                        <rect x="19" y="0" width="6" height="38" fill="#78716c" rx="1"/>
-                        <rect x="10" y="4" width="24" height="3" fill="#78716c" rx="1"/>
-                        <rect x="12" y="38" width="20" height="4" fill="#57534e" rx="1"/>
-                        <line x1="4" y1="46" x2="40" y2="46" stroke="#a8a29e"
-                              stroke-width="1.5" stroke-dasharray="4,2"/>
-                        <line x1="24" y1="49" x2="30" y2="46" stroke="#a8a29e" stroke-width="0.8"/>
-                        <line x1="32" y1="49" x2="38" y2="46" stroke="#a8a29e" stroke-width="0.8"/>
-                      </svg>
-                      <div class="pole-details">
-                        <div class="detail-row">
-                          <span class="detail-lbl">ID</span>
-                          <span class="detail-val">{{ section.startPole.id }}</span>
-                        </div>
-                        <div class="detail-row">
-                          <span class="detail-lbl">Height</span>
-                          <span class="detail-val">{{ section.startPole.aboveGroundHeight | number:'1.1-1' }} m</span>
-                        </div>
-                        <div class="detail-row">
-                          <span class="detail-lbl">Strength</span>
-                          <span class="detail-val">{{ section.startPole.strength | number:'1.0-0' }} kg</span>
-                        </div>
-                        <div class="detail-heading">Constraints</div>
-                        <div class="detail-row">
-                          <span class="detail-lbl">Mech</span>
-                          <span class="detail-val">{{ section.startPole.mechanicalConstraint.intensity | number:'1.2-2' }}</span>
-                        </div>
-                        <div class="detail-row">
-                          <span class="detail-lbl">Wind</span>
-                          <span class="detail-val">{{ section.startPole.windConstraint.intensity | number:'1.2-2' }}</span>
-                        </div>
-                        <div class="detail-row">
-                          <span class="detail-lbl">Total</span>
-                          <span class="detail-val">{{ section.startPole.totalConstraint.intensity | number:'1.2-2' }}</span>
-                        </div>
-                      </div>
-                    </div>
+                    <svg class="half-base-svg" width="22" height="56" viewBox="22 0 22 56">
+                      <rect x="19" y="0" width="6" height="38" fill="#555" rx="1"/>
+
+                      <rect x="12" y="38" width="20" height="4" fill="#57534e" rx="1"/>
+                      <line x1="4" y1="46" x2="40" y2="46" stroke="#a8a29e" stroke-width="1.5" stroke-dasharray="4,2"/>
+                      <line x1="24" y1="49" x2="30" y2="46" stroke="#a8a29e" stroke-width="0.8"/>
+                      <line x1="32" y1="49" x2="38" y2="46" stroke="#a8a29e" stroke-width="0.8"/>
+                    </svg>
                     <!-- End pole: left half base -->
-                    <div class="half-base">
-                      <svg width="22" height="56" viewBox="0 0 22 56">
-                        <rect x="19" y="0" width="6" height="38" fill="#78716c" rx="1"/>
-                        <rect x="10" y="4" width="24" height="3" fill="#78716c" rx="1"/>
-                        <rect x="12" y="38" width="20" height="4" fill="#57534e" rx="1"/>
-                        <line x1="4" y1="46" x2="40" y2="46" stroke="#a8a29e"
-                              stroke-width="1.5" stroke-dasharray="4,2"/>
-                        <line x1="8"  y1="49" x2="14" y2="46" stroke="#a8a29e" stroke-width="0.8"/>
-                        <line x1="16" y1="49" x2="22" y2="46" stroke="#a8a29e" stroke-width="0.8"/>
-                      </svg>
-                      <div class="pole-details">
-                        <div class="detail-row">
-                          <span class="detail-lbl">ID</span>
-                          <span class="detail-val">{{ section.endPole.id }}</span>
-                        </div>
-                        <div class="detail-row">
-                          <span class="detail-lbl">Height</span>
-                          <span class="detail-val">{{ section.endPole.aboveGroundHeight | number:'1.1-1' }} m</span>
-                        </div>
-                        <div class="detail-row">
-                          <span class="detail-lbl">Strength</span>
-                          <span class="detail-val">{{ section.endPole.strength | number:'1.0-0' }} kg</span>
-                        </div>
-                        <div class="detail-heading">Constraints</div>
-                        <div class="detail-row">
-                          <span class="detail-lbl">Mech</span>
-                          <span class="detail-val">{{ section.endPole.mechanicalConstraint.intensity | number:'1.2-2' }}</span>
-                        </div>
-                        <div class="detail-row">
-                          <span class="detail-lbl">Wind</span>
-                          <span class="detail-val">{{ section.endPole.windConstraint.intensity | number:'1.2-2' }}</span>
-                        </div>
-                        <div class="detail-row">
-                          <span class="detail-lbl">Total</span>
-                          <span class="detail-val">{{ section.endPole.totalConstraint.intensity | number:'1.2-2' }}</span>
-                        </div>
-                      </div>
+                    <svg class="half-base-svg" width="22" height="56" viewBox="0 0 22 56">
+                      <rect x="19" y="0" width="6" height="38" fill="#555" rx="1"/>
+
+                      <rect x="12" y="38" width="20" height="4" fill="#57534e" rx="1"/>
+                      <line x1="4" y1="46" x2="40" y2="46" stroke="#a8a29e" stroke-width="1.5" stroke-dasharray="4,2"/>
+                      <line x1="8"  y1="49" x2="14" y2="46" stroke="#a8a29e" stroke-width="0.8"/>
+                      <line x1="16" y1="49" x2="22" y2="46" stroke="#a8a29e" stroke-width="0.8"/>
+                    </svg>
+                  </div>
+                </div>
+              </ng-container>
+              <div class="grid-cell pole-base-corner"></div>
+
+              <!-- ═══ Pole details & constraints row ═══ -->
+              <div class="grid-cell pole-base-corner"></div>
+              <ng-container *ngFor="let section of canton.sections; let si = index">
+                <div class="grid-cell section-details">
+                  <div class="pole-details">
+                    <div class="detail-row">
+                      <span class="detail-lbl">ID</span>
+                      <span class="detail-val">{{ section.endPole.id }}</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-lbl">Height</span>
+                      <span class="detail-val">{{ section.endPole.aboveGroundHeight | number:'1.1-1' }} m</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-lbl">Strength</span>
+                      <span class="detail-val">{{ section.endPole.strength | number:'1.0-0' }} kg</span>
+                    </div>
+                    <div class="detail-heading">Constraints</div>
+                    <div class="detail-row">
+                      <span class="detail-lbl">Mech</span>
+                      <span class="detail-val">{{ section.endPole.mechanicalConstraint.intensity | number:'1.2-2' }}</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-lbl">Wind</span>
+                      <span class="detail-val">{{ section.endPole.windConstraint.intensity | number:'1.2-2' }}</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-lbl">Total</span>
+                      <span class="detail-val">{{ section.endPole.totalConstraint.intensity | number:'1.2-2' }}</span>
                     </div>
                   </div>
                 </div>
@@ -255,7 +230,7 @@ import { CantonService } from '../../services/canton.service';
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 44px;
+      min-height: 0;
     }
 
     /* ── Header row ── */
@@ -308,7 +283,7 @@ import { CantonService } from '../../services/canton.service';
 
     /* ── Section cell (half-poles + curve/dashed) ── */
     .section-cell {
-      padding: 2px 0;
+      padding: 0;
       position: relative;
     }
 
@@ -323,6 +298,7 @@ import { CantonService } from '../../services/canton.service';
       width: 8px;
       height: 44px;
       flex-shrink: 0;
+      display: block;
     }
 
     .section-curve-wrapper {
@@ -349,6 +325,7 @@ import { CantonService } from '../../services/canton.service';
       align-items: center;
       width: 100%;
       height: 44px;
+      line-height: 0;
     }
 
     .section-dashed {
@@ -381,31 +358,33 @@ import { CantonService } from '../../services/canton.service';
 
     /* ── Pole base row (section-centric) ── */
     .pole-base-corner {
-      border-top: 2px solid rgba(100, 116, 139, 0.18);
     }
 
     .section-base {
       flex-direction: column;
-      padding: 10px 4px 8px;
-      border-top: 2px solid rgba(100, 116, 139, 0.18);
-      border-radius: 0 0 6px 6px;
+      padding: 0;
+      min-height: 0;
     }
 
-    .section-base-content {
+    .base-combined {
       display: flex;
       justify-content: space-between;
+      align-items: flex-start;
       width: 100%;
-      gap: 12px;
+      line-height: 0;
     }
 
-    .half-base {
-      display: flex;
+    .half-base-svg {
+      flex-shrink: 0;
+      display: block;
+    }
+
+    /* ── Pole details & constraints row ── */
+    .section-details {
       flex-direction: column;
-      align-items: center;
-      flex: 1;
-      background: rgba(59, 130, 246, 0.04);
+      align-items: stretch;
+      padding: 6px 4px 8px;
       border-radius: 0 0 6px 6px;
-      padding: 4px 2px;
     }
 
     /* ── Pole details ── */
