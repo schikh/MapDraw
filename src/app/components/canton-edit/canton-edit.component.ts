@@ -44,163 +44,158 @@ import { CantonService } from '../../services/canton.service';
         <!-- Body: Grid Layout -->
         <div class="modal-body" *ngIf="canton">
 
-          <div class="no-lines" *ngIf="lines.length === 0 && canton.poles.length === 0">
-            No poles or lines added yet.
-          </div>
+            <div class="canton-grid">
 
-          <div class="canton-grid-wrapper" *ngIf="canton.poles.length > 0">
-            <div class="canton-grid" [style.gridTemplateColumns]="gridTemplateColumns">
+              <div class="left-panel debug">
+                <div class="panel-spacer header-spacer"></div>
 
-              <!-- ═══ Header row: section headers with pole IDs + length ═══ -->
-              <div class="grid-cell header-corner"></div>
-              <ng-container *ngFor="let section of canton.sections; let si = index">
-                <div class="grid-cell section-header">
-                  <span class="sh-pole">P{{ section.startPole.id }}</span>
-                  <span class="sh-length">{{ section.length | number:'1.1-1' }} m</span>
-                  <span class="sh-pole">P{{ section.endPole.id }}</span>
+                <ng-container *ngFor="let line of lines; let li = index">
+                  <div class="grid-cell line-details line-row-cell">
+                    <select
+                      class="cg-line-select"
+                      [ngModel]="line.type"
+                      (ngModelChange)="onTypeChange(line, $event)">
+                      <option *ngFor="let cable of cables" [value]="cable.type">{{ cable.type }}</option>
+                    </select>
+                    <input
+                      type="number"
+                      class="cg-max-input"
+                      [ngModel]="line.maxConstraint"
+                      (ngModelChange)="line.maxConstraint = $event"
+                      min="0" step="0.1" />
+                  </div>
+                </ng-container>
+
+                <div class="panel-spacer base-spacer debug"></div>
+                <div class="panel-spacer details-spacer"></div>
+              </div>
+
+              <div class="sections-panel">
+                <div class="section-grid section-grid-header" [style.gridTemplateColumns]="sectionGridTemplateColumns">
+                  <ng-container *ngFor="let section of canton.sections; let si = index">
+                    <div class="grid-cell section-header">
+                      <span class="sh-pole">P{{ section.startPole.id }}</span>
+                      <span class="sh-length">{{ section.length | number:'1.1-1' }} m</span>
+                      <span class="sh-pole">P{{ section.endPole.id }}</span>
+                    </div>
+                  </ng-container>
                 </div>
-              </ng-container>
-              <div class="grid-cell header-corner"></div>
 
-              <!-- ═══ Line rows ═══ -->
-              <ng-container *ngFor="let line of lines; let li = index">
-                <!-- Line type selector (left) -->
-                <div class="grid-cell line-label">
-                  <select
-                    class="cg-line-select"
-                    [ngModel]="line.type"
-                    (ngModelChange)="onTypeChange(line, $event)">
-                    <option *ngFor="let cable of cables" [value]="cable.type">{{ cable.type }}</option>
-                  </select>
-                </div>
+                <ng-container *ngFor="let line of lines; let li = index">
+                  <div class="section-grid line-sections-row" [style.gridTemplateColumns]="sectionGridTemplateColumns">
+                    <ng-container *ngFor="let section of canton.sections; let si = index">
+                      <div class="grid-cell section-cell">
+                        <ng-container *ngIf="line.lineSections[si] as ls">
+                          <div class="section-content" *ngIf="ls.linked">
+                            <svg class="half-pole-svg" viewBox="6 0 6 44">
+                              <rect x="4" y="0" width="4" height="44" fill="#555" rx="1"/>
+                              <circle cx="6" cy="22" r="4" fill="#63b3ed" stroke="#2b6cb0" stroke-width="1"/>
+                            </svg>
+                            <div class="section-curve-wrapper">
+                              <svg class="section-curve" viewBox="0 0 100 44" preserveAspectRatio="none">
+                                <path d="M0,22 Q50,40 100,22" stroke="#63b3ed" stroke-width="2" fill="none"/>
+                              </svg>
+                              <span class="sag-label">S: {{ ls.sag | number:'1.2-2' }}</span>
+                            </div>
+                            <svg class="half-pole-svg" viewBox="0 0 6 44">
+                              <rect x="4" y="0" width="4" height="44" fill="#555" rx="1"/>
+                              <circle cx="6" cy="22" r="4" fill="#63b3ed" stroke="#2b6cb0" stroke-width="1"/>
+                            </svg>
+                          </div>
 
-                <!-- Section cells: half-pole-start + curve + half-pole-end -->
-                <ng-container *ngFor="let section of canton.sections; let si = index">
-                  <div class="grid-cell section-cell">
-                    <ng-container *ngIf="line.lineSections[si] as ls">
-                      <!-- Linked: half poles + catenary -->
-                      <div class="section-content" *ngIf="ls.linked">
-                        <!-- Left half pole (right half of start pole) -->
-                        <svg class="half-pole-svg" viewBox="6 0 6 44">
-                          <rect x="4" y="0" width="4" height="44" fill="#555" rx="1"/>
-                          <circle cx="6" cy="22" r="4" fill="#63b3ed" stroke="#2b6cb0" stroke-width="1"/>
-                        </svg>
-                        <!-- Catenary curve -->
-                        <div class="section-curve-wrapper">
-                          <svg class="section-curve" viewBox="0 0 100 44" preserveAspectRatio="none">
-                            <path d="M0,22 Q50,40 100,22" stroke="#63b3ed" stroke-width="2" fill="none"/>
-                          </svg>
-                          <span class="sag-label">S: {{ ls.sag | number:'1.2-2' }}</span>
-                        </div>
-                        <!-- Right half pole (left half of end pole) -->
-                        <svg class="half-pole-svg" viewBox="0 0 6 44">
-                          <rect x="4" y="0" width="4" height="44" fill="#555" rx="1"/>
-                          <circle cx="6" cy="22" r="4" fill="#63b3ed" stroke="#2b6cb0" stroke-width="1"/>
-                        </svg>
-                      </div>
-                      <!-- Unlinked: half poles + dashed line -->
-                      <div class="section-unlinked" *ngIf="!ls.linked">
-                        <!-- Left half pole (right half of start pole) -->
-                        <svg class="half-pole-svg" viewBox="6 0 6 44">
-                          <rect x="4" y="0" width="4" height="44" fill="#555" rx="1"/>
-                        </svg>
-                        <!-- Dashed line -->
-                        <svg class="section-dashed" viewBox="0 0 100 44" preserveAspectRatio="none">
-                          <line x1="0" y1="22" x2="100" y2="22"
-                                stroke="#555" stroke-width="1" stroke-dasharray="6,4"/>
-                        </svg>
-                        <!-- Right half pole (left half of end pole) -->
-                        <svg class="half-pole-svg" viewBox="0 0 6 44">
-                          <rect x="4" y="0" width="4" height="44" fill="#555" rx="1"/>
-                        </svg>
+                          <div class="section-unlinked" *ngIf="!ls.linked">
+                            <svg class="half-pole-svg" viewBox="6 0 6 44">
+                              <rect x="4" y="0" width="4" height="44" fill="#555" rx="1"/>
+                            </svg>
+                            <svg class="section-dashed" viewBox="0 0 100 44" preserveAspectRatio="none">
+                              <line x1="0" y1="22" x2="100" y2="22"
+                                    stroke="#555" stroke-width="1" stroke-dasharray="6,4"/>
+                            </svg>
+                            <svg class="half-pole-svg" viewBox="0 0 6 44">
+                              <rect x="4" y="0" width="4" height="44" fill="#555" rx="1"/>
+                            </svg>
+                          </div>
+                        </ng-container>
                       </div>
                     </ng-container>
                   </div>
                 </ng-container>
 
-                <!-- Line controls (right) -->
-                <div class="grid-cell line-controls">
-                  <input
-                    type="number"
-                    class="cg-max-input"
-                    [ngModel]="line.maxConstraint"
-                    (ngModelChange)="line.maxConstraint = $event"
-                    min="0" step="0.1" />
-                  <button class="btn-remove-line" (click)="removeLine(li)" title="Remove line">
-                    <i class="bi bi-trash"></i>
-                  </button>
+                <div class="section-grid section-grid-base debug" [style.gridTemplateColumns]="sectionGridTemplateColumns">
+                  <ng-container *ngFor="let section of canton.sections; let si = index">
+                    <div class="grid-cell section-base">
+                      <div class="base-combined">
+                        <svg class="half-base-svg" width="22" height="56" viewBox="22 0 22 56">
+                          <rect x="19" y="0" width="6" height="38" fill="#555" rx="1"/>
+                          <rect x="12" y="38" width="20" height="4" fill="#57534e" rx="1"/>
+                          <line x1="4" y1="46" x2="40" y2="46" stroke="#a8a29e" stroke-width="1.5" stroke-dasharray="4,2"/>
+                          <line x1="24" y1="49" x2="30" y2="46" stroke="#a8a29e" stroke-width="0.8"/>
+                          <line x1="32" y1="49" x2="38" y2="46" stroke="#a8a29e" stroke-width="0.8"/>
+                        </svg>
+                        <svg class="half-base-svg" width="22" height="56" viewBox="0 0 22 56">
+                          <rect x="19" y="0" width="6" height="38" fill="#555" rx="1"/>
+                          <rect x="12" y="38" width="20" height="4" fill="#57534e" rx="1"/>
+                          <line x1="4" y1="46" x2="40" y2="46" stroke="#a8a29e" stroke-width="1.5" stroke-dasharray="4,2"/>
+                          <line x1="8" y1="49" x2="14" y2="46" stroke="#a8a29e" stroke-width="0.8"/>
+                          <line x1="16" y1="49" x2="22" y2="46" stroke="#a8a29e" stroke-width="0.8"/>
+                        </svg>
+                      </div>
+                    </div>
+                  </ng-container>
                 </div>
-              </ng-container>
 
-              <!-- ═══ Pole base row (section-centric: both halves in one div) ═══ -->
-              <div class="grid-cell pole-base-corner"></div>
-              <ng-container *ngFor="let section of canton.sections; let si = index">
-                <div class="grid-cell section-base">
-                  <div class="base-combined">
-                    <!-- Start pole: right half base -->
-                    <svg class="half-base-svg" width="22" height="56" viewBox="22 0 22 56">
-                      <rect x="19" y="0" width="6" height="38" fill="#555" rx="1"/>
+                <div class="section-grid section-grid-details" [style.gridTemplateColumns]="sectionGridTemplateColumns">
+                  <ng-container *ngFor="let section of canton.sections; let si = index">
+                    <div class="grid-cell section-details">
+                      <div class="pole-details">
+                        <div class="detail-row">
+                          <span class="detail-lbl">ID</span>
+                          <span class="detail-val">{{ section.endPole.id }}</span>
+                        </div>
+                        <div class="detail-row">
+                          <span class="detail-lbl">Height</span>
+                          <span class="detail-val">{{ section.endPole.aboveGroundHeight | number:'1.1-1' }} m</span>
+                        </div>
+                        <div class="detail-row">
+                          <span class="detail-lbl">Strength</span>
+                          <span class="detail-val">{{ section.endPole.strength | number:'1.0-0' }} kg</span>
+                        </div>
+                        <div class="detail-heading">Constraints</div>
+                        <div class="detail-row">
+                          <span class="detail-lbl">Mech</span>
+                          <span class="detail-val">{{ section.endPole.mechanicalConstraint.intensity | number:'1.2-2' }}</span>
+                        </div>
+                        <div class="detail-row">
+                          <span class="detail-lbl">Wind</span>
+                          <span class="detail-val">{{ section.endPole.windConstraint.intensity | number:'1.2-2' }}</span>
+                        </div>
+                        <div class="detail-row">
+                          <span class="detail-lbl">Total</span>
+                          <span class="detail-val">{{ section.endPole.totalConstraint.intensity | number:'1.2-2' }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
 
-                      <rect x="12" y="38" width="20" height="4" fill="#57534e" rx="1"/>
-                      <line x1="4" y1="46" x2="40" y2="46" stroke="#a8a29e" stroke-width="1.5" stroke-dasharray="4,2"/>
-                      <line x1="24" y1="49" x2="30" y2="46" stroke="#a8a29e" stroke-width="0.8"/>
-                      <line x1="32" y1="49" x2="38" y2="46" stroke="#a8a29e" stroke-width="0.8"/>
-                    </svg>
-                    <!-- End pole: left half base -->
-                    <svg class="half-base-svg" width="22" height="56" viewBox="0 0 22 56">
-                      <rect x="19" y="0" width="6" height="38" fill="#555" rx="1"/>
+              <div class="side-panel right-panel debug">
+                <div class="panel-spacer header-spacer"></div>
 
-                      <rect x="12" y="38" width="20" height="4" fill="#57534e" rx="1"/>
-                      <line x1="4" y1="46" x2="40" y2="46" stroke="#a8a29e" stroke-width="1.5" stroke-dasharray="4,2"/>
-                      <line x1="8"  y1="49" x2="14" y2="46" stroke="#a8a29e" stroke-width="0.8"/>
-                      <line x1="16" y1="49" x2="22" y2="46" stroke="#a8a29e" stroke-width="0.8"/>
-                    </svg>
+                <ng-container *ngFor="let line of lines; let li = index">
+                  <div class="grid-cell line-action line-row-cell">
+                    <button class="btn-remove-line" (click)="removeLine(li)" title="Remove line">
+                      <i class="bi bi-trash"></i>
+                    </button>
                   </div>
-                </div>
-              </ng-container>
-              <div class="grid-cell pole-base-corner"></div>
+                </ng-container>
 
-              <!-- ═══ Pole details & constraints row ═══ -->
-              <div class="grid-cell pole-base-corner"></div>
-              <ng-container *ngFor="let section of canton.sections; let si = index">
-                <div class="grid-cell section-details">
-                  <div class="pole-details">
-                    <div class="detail-row">
-                      <span class="detail-lbl">ID</span>
-                      <span class="detail-val">{{ section.endPole.id }}</span>
-                    </div>
-                    <div class="detail-row">
-                      <span class="detail-lbl">Height</span>
-                      <span class="detail-val">{{ section.endPole.aboveGroundHeight | number:'1.1-1' }} m</span>
-                    </div>
-                    <div class="detail-row">
-                      <span class="detail-lbl">Strength</span>
-                      <span class="detail-val">{{ section.endPole.strength | number:'1.0-0' }} kg</span>
-                    </div>
-                    <div class="detail-heading">Constraints</div>
-                    <div class="detail-row">
-                      <span class="detail-lbl">Mech</span>
-                      <span class="detail-val">{{ section.endPole.mechanicalConstraint.intensity | number:'1.2-2' }}</span>
-                    </div>
-                    <div class="detail-row">
-                      <span class="detail-lbl">Wind</span>
-                      <span class="detail-val">{{ section.endPole.windConstraint.intensity | number:'1.2-2' }}</span>
-                    </div>
-                    <div class="detail-row">
-                      <span class="detail-lbl">Total</span>
-                      <span class="detail-val">{{ section.endPole.totalConstraint.intensity | number:'1.2-2' }}</span>
-                    </div>
-                  </div>
-                </div>
-              </ng-container>
-              <div class="grid-cell pole-base-corner"></div>
-
+                <div class="panel-spacer base-spacer debug"></div>
+                <div class="panel-spacer details-spacer"></div>
+              </div>
+              
             </div>
-          </div>
 
-          <div class="no-lines" *ngIf="canton.poles.length > 0 && lines.length === 0">
-            No lines added yet. Click <strong>Add Line</strong> above.
-          </div>
         </div>
 
         <!-- Footer -->
@@ -214,15 +209,72 @@ import { CantonService } from '../../services/canton.service';
   styles: [`
     /* ── Grid wrapper (horizontal scroll for many poles) ── */
     .canton-grid-wrapper {
-      overflow-x: auto;
       padding: 4px 0;
+      max-width: 100%;
     }
 
     .canton-grid {
       display: grid;
+      grid-template-columns: 300px minmax(0, 1fr) 72px;
+      gap: 0;
+      align-items: start;
+      width: 100%;
+      height: 100%;
+    }
+
+    .side-panel {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .left-panel {
+      display: flex;
+      flex-direction: column;
+      width: 300px;
+    }
+
+    .right-panel {
+      overflow-x: hidden;
+      min-width: 0;
+      width: 72px;
+    }
+
+    .sections-panel {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      scrollbar-gutter: stable;
+    }
+
+    .section-grid {
+      display: grid;
       gap: 0;
       align-items: stretch;
-      min-width: fit-content;
+      width: max-content;
+      min-width: 100%;
+    }
+
+    .panel-spacer,
+    .line-row-cell,
+    .section-cell {
+      min-height: 44px;
+    }
+
+    .header-spacer,
+    .section-grid-header .section-header {
+      min-height: 38px;
+    }
+
+    .base-spacer,
+    .section-grid-base .section-base {
+      min-height: 56px;
+    }
+
+    .details-spacer,
+    .section-grid-details .section-details {
+      min-height: 138px;
     }
 
     /* ── Generic grid cell ── */
@@ -230,7 +282,6 @@ import { CantonService } from '../../services/canton.service';
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 0;
     }
 
     /* ── Header row ── */
@@ -244,6 +295,7 @@ import { CantonService } from '../../services/canton.service';
       padding: 6px 8px;
       background: rgba(59, 130, 246, 0.06);
       border-radius: 6px 6px 0 0;
+      box-sizing: border-box;
     }
 
     .sh-pole {
@@ -256,13 +308,18 @@ import { CantonService } from '../../services/canton.service';
       font-size: 0.68rem;
     }
 
-    /* ── Line label (left column) ── */
-    .line-label {
-      padding: 4px 8px 4px 0;
-      justify-content: flex-end;
+    /* ── Line details (left column) ── */
+    .line-details {
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 6px 10px 6px 0;
+      box-sizing: border-box;
     }
 
     .cg-line-select {
+      flex: 1;
       background: rgba(255,255,255,0.08);
       color: #fff;
       border: 1px solid rgba(255,255,255,0.15);
@@ -281,10 +338,25 @@ import { CantonService } from '../../services/canton.service';
       border-color: var(--app-accent-blue);
     }
 
+    .line-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .line-meta-label {
+      font-size: 0.68rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
     /* ── Section cell (half-poles + curve/dashed) ── */
     .section-cell {
       padding: 0;
       position: relative;
+      box-sizing: border-box;
     }
 
     .section-content {
@@ -292,6 +364,7 @@ import { CantonService } from '../../services/canton.service';
       align-items: center;
       width: 100%;
       height: 44px;
+      justify-content: center;
     }
 
     .half-pole-svg {
@@ -333,15 +406,16 @@ import { CantonService } from '../../services/canton.service';
       height: 36px;
     }
 
-    /* ── Line controls (right column) ── */
-    .line-controls {
+    /* ── Remove line action (right column) ── */
+    .line-action {
       padding: 4px 0 4px 8px;
-      gap: 6px;
-      justify-content: flex-start;
+      justify-content: center;
+      box-sizing: border-box;
     }
 
     .cg-max-input {
-      width: 68px;
+      flex: 0 0 74px;
+      width: 74px;
       background: rgba(255,255,255,0.08);
       border: 1px solid rgba(255,255,255,0.15);
       color: #fff;
@@ -362,6 +436,7 @@ import { CantonService } from '../../services/canton.service';
 
     .section-base {
       flex-direction: column;
+      justify-content: center;
       padding: 0;
       min-height: 0;
     }
@@ -383,8 +458,10 @@ import { CantonService } from '../../services/canton.service';
     .section-details {
       flex-direction: column;
       align-items: stretch;
+      justify-content: center;
       padding: 6px 4px 8px;
       border-radius: 0 0 6px 6px;
+      box-sizing: border-box;
     }
 
     /* ── Pole details ── */
@@ -447,22 +524,26 @@ export class CantonEditComponent implements OnChanges {
     return this.canton?.lines ?? [];
   }
 
+  get hasSectionScrollbar(): boolean {
+    return (this.canton?.poles?.length ?? 0) > 5;
+  }
+
   /**
-   * Dynamically build the CSS grid-template-columns string.
+   * Dynamically build the LineSections grid-template-columns string.
    *
-   * Layout:  [line-label] [section]… [controls]
+   * Layout: [section cells]…
    *
    * Each section column includes half-poles on both sides.
    * For N poles there are N-1 section columns.
    */
-  get gridTemplateColumns(): string {
+  get sectionGridTemplateColumns(): string {
     const n = this.canton?.sections?.length ?? 0;
     if (n === 0) return '1fr';
-    let cols = '140px';                           // line-label column
+    const sectionWidth = n <= 4 ? 'minmax(160px, 1fr)' : '160px';
+    let cols = '';
     for (let i = 0; i < n; i++) {
-      cols += ' minmax(160px, 1fr)';              // section column (includes half-poles)
+      cols += cols ? ` ${sectionWidth}` : sectionWidth;
     }
-    cols += ' 140px';                             // controls column
     return cols;
   }
 
