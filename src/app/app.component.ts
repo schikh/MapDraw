@@ -22,17 +22,17 @@ import { MapComponent } from './components/map/map.component';
     MapComponent
   ],
   template: `
-    <div class="app-container">
+    <div class="app-container d-flex flex-column min-vh-100 overflow-hidden bg-dark text-light">
       <!-- Header with Navigation -->
       <app-header></app-header>
 
       <!-- Main Content Area -->
-      <main class="main-content">
+      <main class="main-content d-flex flex-grow-1 overflow-hidden position-relative">
         <!-- Sidebar with Drawing Tools -->
         <app-sidebar></app-sidebar>
 
         <!-- Map Display -->
-        <div class="map-area">
+        <div class="map-area flex-grow-1 position-relative overflow-hidden">
           <app-map></app-map>
         </div>
       </main>

@@ -18,18 +18,18 @@ import { Pole } from '../../model/Pole';
   imports: [CommonModule, PoleEditComponent, CantonEditComponent],
   template: `
     <!-- Map Container -->
-    <div class="map-wrapper">
+    <div class="map-wrapper position-relative h-100 w-100 bg-dark">
       <!-- OpenLayers Map Target -->
-      <div #mapContainer class="map-container"></div>
+      <div #mapContainer class="map-container h-100 w-100"></div>
 
       <!-- Coordinates Display (Bottom Right) -->
-      <div class="coordinates-display">
+      <div class="coordinates-display position-absolute end-0 bottom-0 mb-4 me-2 px-3 py-2 rounded small text-white font-monospace d-flex align-items-center gap-1">
         <i class="bi bi-crosshair me-1"></i>
         <span>{{ cursorCoordinates || 'Move cursor over map' }}</span>
       </div>
 
       <!-- Loading Overlay -->
-      <div class="loading-overlay" *ngIf="isLoading">
+      <div class="loading-overlay position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center" *ngIf="isLoading">
         <div class="spinner-border text-primary" role="status">
           <span class="visually-hidden">Loading map...</span>
         </div>

@@ -15,7 +15,7 @@ import { MapService, DrawingMode } from '../../services/map.service';
   template: `
     <!-- Sidebar Container -->
     <aside 
-      class="sidebar bg-dark border-end border-secondary"
+      class="sidebar d-flex flex-column bg-dark border-end border-secondary"
       [class.collapsed]="isCollapsed">
       
       <!-- Toggle Button -->
@@ -27,7 +27,7 @@ import { MapService, DrawingMode } from '../../services/map.service';
       </button>
 
       <!-- Sidebar Content -->
-      <div class="sidebar-content" *ngIf="!isCollapsed">
+      <div class="sidebar-content d-flex flex-column" *ngIf="!isCollapsed">
         <!-- Header -->
         <div class="sidebar-header p-3 border-bottom border-secondary">
           <h6 class="mb-0 text-light">
@@ -171,7 +171,7 @@ import { MapService, DrawingMode } from '../../services/map.service';
       </div>
 
       <!-- Collapsed View -->
-      <div class="collapsed-icons p-2" *ngIf="isCollapsed">
+      <div class="collapsed-icons d-flex flex-column align-items-center p-2" *ngIf="isCollapsed">
         <button 
           class="btn btn-sm mb-2"
           [class.btn-primary]="currentMode === 'pole'"
