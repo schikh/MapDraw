@@ -49,7 +49,7 @@ import { CantonService } from '../../services/canton.service';
 
               <div class="canton-grid">
 
-                <div class="left-panel">
+                <div class="left-panel d-flex flex-column">
                   <div class="section-grid section-grid-header">
                       <div class="grid-cell section-header text-secondary-emphasis small text-uppercase fw-semibold">
                         <span>Line type</span>
@@ -135,7 +135,7 @@ import { CantonService } from '../../services/canton.service';
                   <div class="section-grid section-grid-base">
                     <ng-container *ngFor="let section of canton.sections; let si = index">
                       <div class="grid-cell section-base">
-                        <div class="base-combined">
+                        <div class="base-combined d-flex justify-content-between align-items-start w-100">
                           <svg class="half-base-svg" width="22" height="56" viewBox="22 0 22 56">
                             <rect x="19" y="0" width="6" height="38" fill="#555" rx="1"/>
                             <rect x="12" y="38" width="20" height="4" fill="#57534e" rx="1"/>
@@ -158,30 +158,30 @@ import { CantonService } from '../../services/canton.service';
                   <div class="section-grid section-grid-details">
                     <ng-container *ngFor="let section of canton.sections; let si = index">
                       <div class="grid-cell section-details">
-                        <div class="pole-details small">
+                        <div class="mt-2 w-100 small">
                           <div class="detail-row d-flex justify-content-between">
-                            <span class="detail-lbl">ID</span>
+                            <span class="detail-lbl text-secondary">ID</span>
                             <span class="detail-val">{{ section.endPole.id }}</span>
                           </div>
                           <div class="detail-row d-flex justify-content-between">
-                            <span class="detail-lbl">Height</span>
+                            <span class="detail-lbl text-secondary">Height</span>
                             <span class="detail-val">{{ section.endPole.aboveGroundHeight | number:'1.1-1' }} m</span>
                           </div>
                           <div class="detail-row d-flex justify-content-between">
-                            <span class="detail-lbl">Strength</span>
+                            <span class="detail-lbl text-secondary">Strength</span>
                             <span class="detail-val">{{ section.endPole.strength | number:'1.0-0' }} kg</span>
                           </div>
                           <div class="detail-heading">Constraints</div>
                           <div class="detail-row d-flex justify-content-between">
-                            <span class="detail-lbl">Mech</span>
+                            <span class="detail-lbl text-secondary">Mech</span>
                             <span class="detail-val">{{ section.endPole.mechanicalConstraint.intensity | number:'1.2-2' }}</span>
                           </div>
                           <div class="detail-row d-flex justify-content-between">
-                            <span class="detail-lbl">Wind</span>
+                            <span class="detail-lbl text-secondary">Wind</span>
                             <span class="detail-val">{{ section.endPole.windConstraint.intensity | number:'1.2-2' }}</span>
                           </div>
                           <div class="detail-row d-flex justify-content-between">
-                            <span class="detail-lbl">Total</span>
+                            <span class="detail-lbl text-secondary">Total</span>
                             <span class="detail-val">{{ section.endPole.totalConstraint.intensity | number:'1.2-2' }}</span>
                           </div>
                         </div>
@@ -191,7 +191,7 @@ import { CantonService } from '../../services/canton.service';
                   
                 </div>
 
-                <div class="side-panel right-panel">
+                <div class="side-panel right-panel d-flex flex-column">
                   <div class="panel-spacer header-spacer"></div>
 
                   <ng-container *ngFor="let line of lines; let li = index">
@@ -220,245 +220,7 @@ import { CantonService } from '../../services/canton.service';
       </div>
     </div>
   `,
-  styles: [`
-    .modal-panel {
-      max-width: 1024px;
-      width: 100%;
-    }
-
-    .modal-content {
-      background: var(--app-bg-panel);
-      border: 1px solid var(--app-border-light) !important;
-      border-radius: 10px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-      overflow: hidden;
-    }
-
-    .canton-grid {
-      display: grid;
-      grid-template-columns: 300px minmax(0, 1fr) 40px;
-      gap: 0;
-      align-items: start;
-      width: 100%;
-      height: 100%;
-    }
-
-    .side-panel,
-    .left-panel {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .right-panel {
-      overflow-x: hidden;
-      width: 40px;
-    }
-
-    .sections-panel {
-      width: 100%;
-      max-width: 100%;
-      min-width: 0;
-      overflow-x: auto;
-      padding-bottom: 8px;
-      scrollbar-gutter: stable;
-    }
-
-    .section-grid {
-      display: flex;
-      gap: 0;
-      align-items: stretch;
-      width: max-content;
-      min-width: 100%;
-    }
-
-    .panel-spacer,
-    .line-row-cell,
-    .section-cell {
-      min-height: 44px;
-    }
-
-    .header-spacer,
-    .section-grid-header .section-header {
-      min-height: 38px;
-    }
-
-    .base-spacer,
-    .section-grid-base .section-base {
-      min-height: 56px;
-    }
-
-    .details-spacer,
-    .section-grid-details .section-details {
-      min-height: 138px;
-    }
-
-    .grid-cell {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-      font-size: 0.72rem;
-      padding: 6px 8px;
-      background: rgba(59, 130, 246, 0.06);
-      box-sizing: border-box;
-      width: 160px;
-    }
-
-    .sh-pole {
-      font-weight: 600;
-      color: #93c5fd;
-    }
-
-    .sh-length {
-      color: #a8a29e;
-      font-size: 0.68rem;
-    }
-
-    .line-details {
-      padding: 6px 10px 6px 0;
-      box-sizing: border-box;
-    }
-
-    .cg-line-select {
-      flex: 1;
-      width: 130px;
-      font-size: 0.8rem;
-    }
-
-    .cg-max-input {
-      flex: 0 0 74px;
-      width: 74px;
-      font-size: 0.78rem;
-    }
-
-    .section-cell {
-      padding: 0;
-      position: relative;
-      box-sizing: border-box;
-      width: 160px;
-    }
-
-    .section-content,
-    .section-unlinked {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 44px;
-    }
-
-    .section-unlinked {
-      line-height: 0;
-    }
-
-    .half-pole-svg {
-      width: 8px;
-      height: 44px;
-      flex-shrink: 0;
-      display: block;
-    }
-
-    .section-curve-wrapper {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-width: 0;
-    }
-
-    .section-curve,
-    .section-dashed {
-      width: 100%;
-      height: 36px;
-    }
-
-    .sag-label {
-      font-size: 0.65rem;
-      color: #94a3b8;
-      margin-top: -2px;
-    }
-
-    .line-action {
-      padding: 4px 0 4px 8px;
-      box-sizing: border-box;
-    }
-
-    .section-base {
-      flex-direction: column;
-      justify-content: center;
-      padding: 0;
-      min-height: 0;
-      width: 160px;
-    }
-
-    .base-combined {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      width: 100%;
-      line-height: 0;
-    }
-
-    .half-base-svg {
-      flex-shrink: 0;
-      display: block;
-    }
-
-    .section-details {
-      flex-direction: column;
-      align-items: stretch;
-      justify-content: center;
-      padding: 6px 4px 8px;
-      border-radius: 0 0 6px 6px;
-      box-sizing: border-box;
-      width: 160px;
-    }
-
-    .pole-details {
-      margin-top: 6px;
-      width: 100%;
-    }
-
-    .detail-row {
-      font-size: 0.68rem;
-      padding: 1px 4px;
-    }
-
-    .detail-lbl {
-      color: #94a3b8;
-    }
-
-    .detail-val {
-      color: #e2e8f0;
-      font-weight: 500;
-      font-family: 'Cascadia Code', 'Fira Code', monospace;
-    }
-
-    .detail-heading {
-      font-size: 0.62rem;
-      color: #64748b;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      text-align: center;
-      margin-top: 4px;
-      padding-bottom: 2px;
-      border-bottom: 1px solid rgba(100, 116, 139, 0.15);
-    }
-
-    .no-lines {
-      font-size: 0.82rem;
-      color: rgba(255,255,255,0.3);
-      font-style: italic;
-      padding: 12px 0;
-      text-align: center;
-    }
-  `]
+  styles: []
 })
 export class CantonEditComponent implements OnChanges {
   @Input() canton!: Canton;
