@@ -22,7 +22,7 @@ import { CantonService } from '../../services/canton.service';
   imports: [CommonModule, FormsModule],
   template: `
     <div class="edit-overlay" (click)="onBackdropClick($event)">
-      <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="cantonModalTitle">
+      <div class="modal-panel" role="dialog">
 
         <!-- Header -->
         <div class="modal-header">
@@ -46,8 +46,15 @@ import { CantonService } from '../../services/canton.service';
 
             <div class="canton-grid">
 
-              <div class="left-panel debug">
-                <div class="panel-spacer header-spacer"></div>
+              <div class="left-panel">
+                <div class="section-grid section-grid-header">
+                    <div class="grid-cell section-header">
+                      <span class="">xxxxxxxxxx</span>
+                    </div>
+                    <div class="grid-cell section-header">
+                      <span class="">xxxxxxxxxx</span>
+                    </div>                    
+                </div>
 
                 <ng-container *ngFor="let line of lines; let li = index">
                   <div class="grid-cell line-details line-row-cell">
@@ -66,12 +73,13 @@ import { CantonService } from '../../services/canton.service';
                   </div>
                 </ng-container>
 
-                <div class="panel-spacer base-spacer debug"></div>
+                <div class="panel-spacer base-spacer"></div>
                 <div class="panel-spacer details-spacer"></div>
               </div>
 
               <div class="sections-panel">
-                <div class="section-grid section-grid-header" [style.gridTemplateColumns]="sectionGridTemplateColumns">
+
+                <div class="section-grid section-grid-header">
                   <ng-container *ngFor="let section of canton.sections; let si = index">
                     <div class="grid-cell section-header">
                       <span class="sh-pole">P{{ section.startPole.id }}</span>
@@ -82,14 +90,14 @@ import { CantonService } from '../../services/canton.service';
                 </div>
 
                 <ng-container *ngFor="let line of lines; let li = index">
-                  <div class="section-grid line-sections-row" [style.gridTemplateColumns]="sectionGridTemplateColumns">
+                  <div class="section-grid line-sections-row">
                     <ng-container *ngFor="let section of canton.sections; let si = index">
                       <div class="grid-cell section-cell">
                         <ng-container *ngIf="line.lineSections[si] as ls">
+
                           <div class="section-content" *ngIf="ls.linked">
                             <svg class="half-pole-svg" viewBox="6 0 6 44">
                               <rect x="4" y="0" width="4" height="44" fill="#555" rx="1"/>
-                              <circle cx="6" cy="22" r="4" fill="#63b3ed" stroke="#2b6cb0" stroke-width="1"/>
                             </svg>
                             <div class="section-curve-wrapper">
                               <svg class="section-curve" viewBox="0 0 100 44" preserveAspectRatio="none">
@@ -99,7 +107,6 @@ import { CantonService } from '../../services/canton.service';
                             </div>
                             <svg class="half-pole-svg" viewBox="0 0 6 44">
                               <rect x="4" y="0" width="4" height="44" fill="#555" rx="1"/>
-                              <circle cx="6" cy="22" r="4" fill="#63b3ed" stroke="#2b6cb0" stroke-width="1"/>
                             </svg>
                           </div>
 
@@ -115,13 +122,14 @@ import { CantonService } from '../../services/canton.service';
                               <rect x="4" y="0" width="4" height="44" fill="#555" rx="1"/>
                             </svg>
                           </div>
+
                         </ng-container>
                       </div>
                     </ng-container>
                   </div>
                 </ng-container>
 
-                <div class="section-grid section-grid-base debug" [style.gridTemplateColumns]="sectionGridTemplateColumns">
+                <div class="section-grid section-grid-base">
                   <ng-container *ngFor="let section of canton.sections; let si = index">
                     <div class="grid-cell section-base">
                       <div class="base-combined">
@@ -144,7 +152,7 @@ import { CantonService } from '../../services/canton.service';
                   </ng-container>
                 </div>
 
-                <div class="section-grid section-grid-details" [style.gridTemplateColumns]="sectionGridTemplateColumns">
+                <div class="section-grid section-grid-details">
                   <ng-container *ngFor="let section of canton.sections; let si = index">
                     <div class="grid-cell section-details">
                       <div class="pole-details">
@@ -177,9 +185,10 @@ import { CantonService } from '../../services/canton.service';
                     </div>
                   </ng-container>
                 </div>
+                
               </div>
 
-              <div class="side-panel right-panel debug">
+              <div class="side-panel right-panel">
                 <div class="panel-spacer header-spacer"></div>
 
                 <ng-container *ngFor="let line of lines; let li = index">
@@ -190,7 +199,7 @@ import { CantonService } from '../../services/canton.service';
                   </div>
                 </ng-container>
 
-                <div class="panel-spacer base-spacer debug"></div>
+                <div class="panel-spacer base-spacer"></div>
                 <div class="panel-spacer details-spacer"></div>
               </div>
               
@@ -207,6 +216,14 @@ import { CantonService } from '../../services/canton.service';
     </div>
   `,
   styles: [`
+    .modal-panel {
+      max-width: 1024px;
+      width: 100%;
+      /* Optionally center the modal */
+      margin-left: auto;
+      margin-right: auto;
+    }
+
     /* ── Grid wrapper (horizontal scroll for many poles) ── */
     .canton-grid-wrapper {
       padding: 4px 0;
@@ -215,7 +232,7 @@ import { CantonService } from '../../services/canton.service';
 
     .canton-grid {
       display: grid;
-      grid-template-columns: 300px minmax(0, 1fr) 72px;
+      grid-template-columns: 300px minmax(0, 1fr) 40px;
       gap: 0;
       align-items: start;
       width: 100%;
@@ -230,13 +247,11 @@ import { CantonService } from '../../services/canton.service';
     .left-panel {
       display: flex;
       flex-direction: column;
-      width: 300px;
     }
 
     .right-panel {
       overflow-x: hidden;
-      min-width: 0;
-      width: 72px;
+      width: 40px;
     }
 
     .sections-panel {
@@ -249,7 +264,8 @@ import { CantonService } from '../../services/canton.service';
     }
 
     .section-grid {
-      display: grid;
+      display: flex;
+      orientation: horizontal;
       gap: 0;
       align-items: stretch;
       width: max-content;
@@ -265,6 +281,7 @@ import { CantonService } from '../../services/canton.service';
     .header-spacer,
     .section-grid-header .section-header {
       min-height: 38px;
+
     }
 
     .base-spacer,
@@ -294,8 +311,8 @@ import { CantonService } from '../../services/canton.service';
       font-size: 0.72rem;
       padding: 6px 8px;
       background: rgba(59, 130, 246, 0.06);
-      border-radius: 6px 6px 0 0;
       box-sizing: border-box;
+      width: 160px;
     }
 
     .sh-pole {
@@ -357,6 +374,7 @@ import { CantonService } from '../../services/canton.service';
       padding: 0;
       position: relative;
       box-sizing: border-box;
+      width: 160px;
     }
 
     .section-content {
@@ -439,6 +457,7 @@ import { CantonService } from '../../services/canton.service';
       justify-content: center;
       padding: 0;
       min-height: 0;
+      width: 160px;
     }
 
     .base-combined {
@@ -462,6 +481,7 @@ import { CantonService } from '../../services/canton.service';
       padding: 6px 4px 8px;
       border-radius: 0 0 6px 6px;
       box-sizing: border-box;
+      width: 160px;
     }
 
     /* ── Pole details ── */
@@ -526,25 +546,6 @@ export class CantonEditComponent implements OnChanges {
 
   get hasSectionScrollbar(): boolean {
     return (this.canton?.poles?.length ?? 0) > 5;
-  }
-
-  /**
-   * Dynamically build the LineSections grid-template-columns string.
-   *
-   * Layout: [section cells]…
-   *
-   * Each section column includes half-poles on both sides.
-   * For N poles there are N-1 section columns.
-   */
-  get sectionGridTemplateColumns(): string {
-    const n = this.canton?.sections?.length ?? 0;
-    if (n === 0) return '1fr';
-    const sectionWidth = n <= 4 ? 'minmax(160px, 1fr)' : '160px';
-    let cols = '';
-    for (let i = 0; i < n; i++) {
-      cols += cols ? ` ${sectionWidth}` : sectionWidth;
-    }
-    return cols;
   }
 
   ngOnChanges(): void {
