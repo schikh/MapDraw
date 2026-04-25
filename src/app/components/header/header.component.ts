@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   template: `
     <!-- Navigation Header -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary">
+    <nav class="navbar navbar-expand-lg bg-body border-bottom border-secondary">
       <div class="container-fluid">
         <!-- Brand Logo -->
         <a class="navbar-brand d-flex align-items-center" href="#">
@@ -57,7 +57,7 @@ import { CommonModule } from '@angular/common';
       tabindex="-1"
       (click)="hideAbout()">
       <div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
-        <div class="modal-content bg-dark text-light border-secondary">
+          <div class="modal-content border-secondary">
           <div class="modal-header border-secondary">
             <h5 class="modal-title">
               <i class="bi bi-info-circle text-primary me-2"></i>

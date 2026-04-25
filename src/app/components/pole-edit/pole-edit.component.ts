@@ -49,7 +49,7 @@ import { Pole } from '../../model/Pole';
               </div>
             </div>
 
-            <hr class="divider">
+            <hr class="my-3">
 
             <!-- Editable fields -->
             <div class="row g-3">

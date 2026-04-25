@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <footer class="footer bg-dark text-light border-top border-secondary">
+    <footer class="footer bg-body border-top border-secondary">
       <div class="container-fluid py-2">
         <div class="row align-items-center">
           <!-- Copyright Text -->

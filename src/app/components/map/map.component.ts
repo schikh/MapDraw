@@ -18,7 +18,7 @@ import { Pole } from '../../model/Pole';
   imports: [CommonModule, PoleEditComponent, CantonEditComponent],
   template: `
     <!-- Map Container -->
-    <div class="map-wrapper position-relative h-100 w-100 bg-dark">
+    <div class="map-wrapper position-relative h-100 w-100">
       <!-- OpenLayers Map Target -->
       <div #mapContainer class="map-container h-100 w-100"></div>
 

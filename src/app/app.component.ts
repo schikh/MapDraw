@@ -22,7 +22,7 @@ import { MapComponent } from './components/map/map.component';
     MapComponent
   ],
   template: `
-    <div class="app-container d-flex flex-column min-vh-100 overflow-hidden bg-dark text-light">
+    <div class="app-container d-flex flex-column min-vh-100 overflow-hidden">
       <!-- Header with Navigation -->
       <app-header></app-header>
 

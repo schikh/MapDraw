@@ -82,6 +82,7 @@ import { CantonService } from '../../services/canton.service';
 
                 <div class="sections-panel">
 
+                  <!-- Section header: start pole, span length, end pole -->
                   <div class="section-grid section-grid-header">
                     <ng-container *ngFor="let section of canton.sections; let si = index">
                       <div class="grid-cell section-header">
@@ -98,32 +99,28 @@ import { CantonService } from '../../services/canton.service';
                         <div class="grid-cell section-cell">
                           <ng-container *ngIf="line.lineSections[si] as ls">
 
+                            <!-- Linked section: left pole, cable sag curve, right pole -->
                             <div class="section-content" *ngIf="ls.linked">
-                              <svg class="half-pole-svg" viewBox="6 0 6 44">
-                                <rect x="4" y="0" width="4" height="44" fill="#555" rx="1"/>
-                              </svg>
+                              <!-- Left half of the pole at the start of the section -->
+                              <img class="half-pole-svg" src="assets/canton-edit/half-pole-left.svg" alt="" />
                               <div class="section-curve-wrapper">
-                                <svg class="section-curve" viewBox="0 0 100 44" preserveAspectRatio="none">
-                                  <path d="M0,22 Q50,40 100,22" stroke="#63b3ed" stroke-width="2" fill="none"/>
-                                </svg>
+                                <!-- Cable curve between the two poles -->
+                                <img class="section-curve" src="assets/canton-edit/section-curve.svg" alt="" />
+                                <!-- Sag value for this linked line section -->
                                 <span class="sag-label">S: {{ ls.sag | number:'1.2-2' }}</span>
                               </div>
-                              <svg class="half-pole-svg" viewBox="0 0 6 44">
-                                <rect x="4" y="0" width="4" height="44" fill="#555" rx="1"/>
-                              </svg>
+                              <!-- Right half of the pole at the end of the section -->
+                              <img class="half-pole-svg" src="assets/canton-edit/half-pole-right.svg" alt="" />
                             </div>
 
+                            <!-- Unlinked section: left pole, dashed placeholder span, right pole -->
                             <div class="section-unlinked" *ngIf="!ls.linked">
-                              <svg class="half-pole-svg" viewBox="6 0 6 44">
-                                <rect x="4" y="0" width="4" height="44" fill="#555" rx="1"/>
-                              </svg>
-                              <svg class="section-dashed" viewBox="0 0 100 44" preserveAspectRatio="none">
-                                <line x1="0" y1="22" x2="100" y2="22"
-                                      stroke="#555" stroke-width="1" stroke-dasharray="6,4"/>
-                              </svg>
-                              <svg class="half-pole-svg" viewBox="0 0 6 44">
-                                <rect x="4" y="0" width="4" height="44" fill="#555" rx="1"/>
-                              </svg>
+                              <!-- Left half of the pole at the start of the section -->
+                              <img class="half-pole-svg" src="assets/canton-edit/half-pole-left.svg" alt="" />
+                              <!-- Dashed line indicating no link between poles -->
+                              <img class="section-dashed" src="assets/canton-edit/section-dashed.svg" alt="" />
+                              <!-- Right half of the pole at the end of the section -->
+                              <img class="half-pole-svg" src="assets/canton-edit/half-pole-right.svg" alt="" />
                             </div>
 
                           </ng-container>
@@ -132,29 +129,21 @@ import { CantonService } from '../../services/canton.service';
                     </div>
                   </ng-container>
 
+                  <!-- Pole base row: ground/base graphics under each section boundary -->
                   <div class="section-grid section-grid-base">
                     <ng-container *ngFor="let section of canton.sections; let si = index">
                       <div class="grid-cell section-base">
                         <div class="base-combined d-flex justify-content-between align-items-start w-100">
-                          <svg class="half-base-svg" width="22" height="56" viewBox="22 0 22 56">
-                            <rect x="19" y="0" width="6" height="38" fill="#555" rx="1"/>
-                            <rect x="12" y="38" width="20" height="4" fill="#57534e" rx="1"/>
-                            <line x1="4" y1="46" x2="40" y2="46" stroke="#a8a29e" stroke-width="1.5" stroke-dasharray="4,2"/>
-                            <line x1="24" y1="49" x2="30" y2="46" stroke="#a8a29e" stroke-width="0.8"/>
-                            <line x1="32" y1="49" x2="38" y2="46" stroke="#a8a29e" stroke-width="0.8"/>
-                          </svg>
-                          <svg class="half-base-svg" width="22" height="56" viewBox="0 0 22 56">
-                            <rect x="19" y="0" width="6" height="38" fill="#555" rx="1"/>
-                            <rect x="12" y="38" width="20" height="4" fill="#57534e" rx="1"/>
-                            <line x1="4" y1="46" x2="40" y2="46" stroke="#a8a29e" stroke-width="1.5" stroke-dasharray="4,2"/>
-                            <line x1="8" y1="49" x2="14" y2="46" stroke="#a8a29e" stroke-width="0.8"/>
-                            <line x1="16" y1="49" x2="22" y2="46" stroke="#a8a29e" stroke-width="0.8"/>
-                          </svg>
+                          <!-- Left half of the base/pole support -->
+                          <img class="half-base-svg" src="assets/canton-edit/half-base-left.svg" alt="" />
+                          <!-- Right half of the base/pole support -->
+                          <img class="half-base-svg" src="assets/canton-edit/half-base-right.svg" alt="" />
                         </div>
                       </div>
                     </ng-container>
                   </div>
 
+                  <!-- Pole details row: pole metadata and computed constraints -->
                   <div class="section-grid section-grid-details">
                     <ng-container *ngFor="let section of canton.sections; let si = index">
                       <div class="grid-cell section-details">

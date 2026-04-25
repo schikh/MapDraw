@@ -15,7 +15,7 @@ import { MapService, DrawingMode } from '../../services/map.service';
   template: `
     <!-- Sidebar Container -->
     <aside 
-      class="sidebar d-flex flex-column bg-dark border-end border-secondary"
+      class="sidebar d-flex flex-column bg-body border-end border-secondary"
       [class.collapsed]="isCollapsed">
       
       <!-- Toggle Button -->
@@ -38,70 +38,14 @@ import { MapService, DrawingMode } from '../../services/map.service';
 
         <!-- Drawing Tools Section -->
         <div class="p-3">
-          <!-- Add Pole Button -->
-          <button 
+          <!-- Tool Buttons -->
+          <button *ngFor="let tool of tools"
             class="btn w-100 mb-2 d-flex align-items-center"
-            [class.btn-primary]="currentMode === 'pole'"
-            [class.btn-outline-light]="currentMode !== 'pole'"
-            (click)="setMode('pole')"
-            title="Click to add poles to the map">
-            <i class="bi bi-geo-alt-fill me-2"></i>
-            <span>Add Pole</span>
-          </button>
-
-          <!-- Add Canton Button -->
-          <button 
-            class="btn w-100 mb-2 d-flex align-items-center"
-            [class.btn-success]="currentMode === 'canton'"
-            [class.btn-outline-light]="currentMode !== 'canton'"
-            (click)="setMode('canton')"
-            title="Click poles to create a canton line">
-            <i class="bi bi-bezier2 me-2"></i>
-            <span>Add Canton</span>
-          </button>
-
-          <!-- Rotate Pole Button -->
-          <button 
-            class="btn w-100 mb-2 d-flex align-items-center"
-            [class.btn-warning]="currentMode === 'rotate'"
-            [class.btn-outline-light]="currentMode !== 'rotate'"
-            (click)="setMode('rotate')"
-            title="Click a pole to select it, then drag to rotate">
-            <i class="bi bi-arrow-repeat me-2"></i>
-            <span>Rotate Pole</span>
-          </button>
-
-          <!-- Move Pole Button -->
-          <button 
-            class="btn w-100 mb-2 d-flex align-items-center"
-            [class.btn-info]="currentMode === 'move'"
-            [class.btn-outline-light]="currentMode !== 'move'"
-            (click)="setMode('move')"
-            title="Click a pole to select it, then drag to move it">
-            <i class="bi bi-arrows-move me-2"></i>
-            <span>Move Pole</span>
-          </button>
-
-          <!-- Remove Canton Button -->
-          <button 
-            class="btn w-100 mb-2 d-flex align-items-center"
-            [class.btn-danger]="currentMode === 'remove-canton'"
-            [class.btn-outline-light]="currentMode !== 'remove-canton'"
-            (click)="setMode('remove-canton')"
-            title="Click a canton to select it, then click again to delete it">
-            <i class="bi bi-scissors me-2"></i>
-            <span>Remove Canton</span>
-          </button>
-
-          <!-- Remove Pole Button -->
-          <button 
-            class="btn w-100 mb-2 d-flex align-items-center"
-            [class.btn-danger]="currentMode === 'remove-pole'"
-            [class.btn-outline-light]="currentMode !== 'remove-pole'"
-            (click)="setMode('remove-pole')"
-            title="Click a pole to select it, then click again to delete it">
-            <i class="bi bi-geo-alt me-2"></i>
-            <span>Remove Pole</span>
+            [ngClass]="currentMode === tool.mode ? tool.activeClass : 'btn-outline-light'"
+            (click)="setMode(tool.mode)"
+            [title]="tool.title">
+            <i class="bi me-2" [ngClass]="tool.icon"></i>
+            <span>{{ tool.label }}</span>
           </button>
 
           <!-- Stop Drawing Button -->
@@ -146,25 +90,9 @@ import { MapService, DrawingMode } from '../../services/map.service';
 
         <!-- Mode Indicator -->
         <div class="mode-indicator p-3 border-top border-secondary mt-auto">
-          <small class="text-muted d-block mb-1">Current Mode:</small>
-          <span 
-            class="badge w-100 py-2"
-            [class.bg-secondary]="currentMode === 'none'"
-            [class.bg-primary]="currentMode === 'pole'"
-            [class.bg-success]="currentMode === 'canton'"
-            [class.bg-warning]="currentMode === 'rotate'"
-            [class.bg-info]="currentMode === 'move'"
-            [class.bg-danger]="currentMode === 'remove-canton' || currentMode === 'remove-pole'"
-            [class.text-dark]="currentMode === 'rotate' || currentMode === 'move'">
-            <i class="bi me-1"
-               [class.bi-cursor]="currentMode === 'none'"
-               [class.bi-geo-alt-fill]="currentMode === 'pole'"
-               [class.bi-bezier2]="currentMode === 'canton'"
-               [class.bi-arrow-repeat]="currentMode === 'rotate'"
-               [class.bi-arrows-move]="currentMode === 'move'"
-               [class.bi-scissors]="currentMode === 'remove-canton'"
-               [class.bi-geo-alt]="currentMode === 'remove-pole'">
-            </i>
+          <small class="text-body-secondary d-block mb-1">Current Mode:</small>
+          <span class="badge w-100 py-2" [ngClass]="getModeClass()">
+            <i class="bi me-1" [ngClass]="getModeIcon()"></i>
             {{ getModeLabel() }}
           </span>
         </div>
@@ -172,53 +100,12 @@ import { MapService, DrawingMode } from '../../services/map.service';
 
       <!-- Collapsed View -->
       <div class="collapsed-icons d-flex flex-column align-items-center p-2" *ngIf="isCollapsed">
-        <button 
+        <button *ngFor="let tool of tools"
           class="btn btn-sm mb-2"
-          [class.btn-primary]="currentMode === 'pole'"
-          [class.btn-outline-light]="currentMode !== 'pole'"
-          (click)="setMode('pole')"
-          title="Add Pole">
-          <i class="bi bi-geo-alt-fill"></i>
-        </button>
-        <button 
-          class="btn btn-sm mb-2"
-          [class.btn-success]="currentMode === 'canton'"
-          [class.btn-outline-light]="currentMode !== 'canton'"
-          (click)="setMode('canton')"
-          title="Add Canton">
-          <i class="bi bi-bezier2"></i>
-        </button>
-        <button 
-          class="btn btn-sm mb-2"
-          [class.btn-warning]="currentMode === 'rotate'"
-          [class.btn-outline-light]="currentMode !== 'rotate'"
-          (click)="setMode('rotate')"
-          title="Rotate Pole">
-          <i class="bi bi-arrow-repeat"></i>
-        </button>
-        <button 
-          class="btn btn-sm mb-2"
-          [class.btn-info]="currentMode === 'move'"
-          [class.btn-outline-light]="currentMode !== 'move'"
-          (click)="setMode('move')"
-          title="Move Pole">
-          <i class="bi bi-arrows-move"></i>
-        </button>
-        <button 
-          class="btn btn-sm mb-2"
-          [class.btn-danger]="currentMode === 'remove-canton'"
-          [class.btn-outline-light]="currentMode !== 'remove-canton'"
-          (click)="setMode('remove-canton')"
-          title="Remove Canton">
-          <i class="bi bi-scissors"></i>
-        </button>
-        <button 
-          class="btn btn-sm mb-2"
-          [class.btn-danger]="currentMode === 'remove-pole'"
-          [class.btn-outline-light]="currentMode !== 'remove-pole'"
-          (click)="setMode('remove-pole')"
-          title="Remove Pole">
-          <i class="bi bi-geo-alt"></i>
+          [ngClass]="currentMode === tool.mode ? tool.activeClass : 'btn-outline-light'"
+          (click)="setMode(tool.mode)"
+          [title]="tool.label">
+          <i class="bi" [ngClass]="tool.icon"></i>
         </button>
         <button 
           class="btn btn-outline-warning btn-sm mb-2"
@@ -237,7 +124,7 @@ import { MapService, DrawingMode } from '../../services/map.service';
       [style.display]="showConfirmModal ? 'block' : 'none'"
       tabindex="-1">
       <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content bg-dark text-light border-danger">
+        <div class="modal-content border-danger">
           <div class="modal-header border-secondary">
             <h6 class="modal-title text-danger">
               <i class="bi bi-exclamation-triangle me-2"></i>
@@ -276,7 +163,17 @@ export class SidebarComponent implements OnInit, OnDestroy {
   currentMode: DrawingMode = 'none';
   showConfirmModal = false;
   stats = { poles: 0, cantons: 0 };
-  
+
+  /** Tool definitions for sidebar buttons */
+  readonly tools: { mode: DrawingMode; icon: string; label: string; activeClass: string; title: string }[] = [
+    { mode: 'pole', icon: 'bi-geo-alt-fill', label: 'Add Pole', activeClass: 'btn-primary', title: 'Click to add poles to the map' },
+    { mode: 'canton', icon: 'bi-bezier2', label: 'Add Canton', activeClass: 'btn-success', title: 'Click poles to create a canton line' },
+    { mode: 'rotate', icon: 'bi-arrow-repeat', label: 'Rotate Pole', activeClass: 'btn-warning', title: 'Click a pole, then drag to rotate' },
+    { mode: 'move', icon: 'bi-arrows-move', label: 'Move Pole', activeClass: 'btn-info', title: 'Click a pole, then drag to move it' },
+    { mode: 'remove-canton', icon: 'bi-scissors', label: 'Remove Canton', activeClass: 'btn-danger', title: 'Click a canton, then click again to delete' },
+    { mode: 'remove-pole', icon: 'bi-geo-alt', label: 'Remove Pole', activeClass: 'btn-danger', title: 'Click a pole, then click again to delete' },
+  ];
+
   private modeSubscription?: Subscription;
   private statsSubscription?: Subscription;
 
@@ -327,15 +224,22 @@ export class SidebarComponent implements OnInit, OnDestroy {
    * Returns a human-readable label for the current mode.
    */
   getModeLabel(): string {
-    switch (this.currentMode) {
-      case 'pole': return 'Adding Poles';
-      case 'canton': return 'Drawing Canton';
-      case 'rotate': return 'Rotating Pole';
-      case 'move': return 'Moving Pole';
-      case 'remove-canton': return 'Removing Canton';
-      case 'remove-pole': return 'Removing Pole';
-      default: return 'Select Tool';
-    }
+    const tool = this.tools.find(t => t.mode === this.currentMode);
+    return tool ? tool.label : 'Select Tool';
+  }
+
+  /** Returns the Bootstrap badge class for the current mode. */
+  getModeClass(): string {
+    const tool = this.tools.find(t => t.mode === this.currentMode);
+    if (!tool) return 'bg-secondary';
+    const cls = tool.activeClass.replace('btn-', 'bg-');
+    return (this.currentMode === 'rotate' || this.currentMode === 'move') ? cls + ' text-dark' : cls;
+  }
+
+  /** Returns the Bootstrap icon class for the current mode. */
+  getModeIcon(): string {
+    const tool = this.tools.find(t => t.mode === this.currentMode);
+    return tool ? tool.icon : 'bi-cursor';
   }
 
   /**
