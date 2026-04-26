@@ -6,11 +6,11 @@
 import { Component, OnInit, OnDestroy, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
-import { MapService } from '../../services/map.service';
-import { PoleEditComponent } from '../pole-edit/pole-edit.component';
-import { CantonEditComponent } from '../canton-edit/canton-edit.component';
-import { Canton } from '../../model/Canton';
-import { Pole } from '../../model/Pole';
+import { MapService } from '../services/map.service';
+import { PoleEditComponent } from './pole-edit.component';
+import { CantonEditComponent } from './canton-edit.component';
+import { Canton } from '../model/Canton';
+import { Pole } from '../model/Pole';
 
 @Component({
   selector: 'app-map',

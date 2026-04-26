@@ -6,7 +6,7 @@
 import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Pole } from '../../model/Pole';
+import { Pole } from '../model/Pole';
 
 @Component({
   selector: 'app-pole-edit',

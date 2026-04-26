@@ -10,11 +10,11 @@
 import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Canton } from '../../model/Canton';
-import { Line } from '../../model/Line';
-import { Pole } from '../../model/Pole';
-import { appSettings, Cable } from '../../config/AppSettings';
-import { CantonService } from '../../services/canton.service';
+import { Canton } from '../model/Canton';
+import { Line } from '../model/Line';
+import { Pole } from '../model/Pole';
+import { appSettings, Cable } from '../config/AppSettings';
+import { CantonService } from '../services/canton.service';
 
 @Component({
   selector: 'app-canton-edit',

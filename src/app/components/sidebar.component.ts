@@ -6,7 +6,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
-import { MapService, DrawingMode } from '../../services/map.service';
+import { MapService, DrawingMode } from '../services/map.service';
 
 @Component({
   selector: 'app-sidebar',
